@@ -39,6 +39,7 @@ class MoveNodeAction extends BaseAction
         try {
             if ($form->prev_id > 0) {
                 $parentModel = $this->findModel($form->prev_id);
+
                 if ($parentModel->isRoot()) {
                     return $model->appendTo($parentModel)->save();
                 } else {
@@ -46,9 +47,11 @@ class MoveNodeAction extends BaseAction
                 }
             } elseif ($form->next_id > 0) {
                 $parentModel = $this->findModel($form->next_id);
+
                 return $model->insertBefore($parentModel)->save();
             } elseif ($form->parent_id > 0) {
                 $parentModel = $this->findModel($form->parent_id);
+
                 return $model->appendTo($parentModel)->save();
             }
         } catch (Exception $ex) {

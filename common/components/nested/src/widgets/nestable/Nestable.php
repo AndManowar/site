@@ -3,6 +3,7 @@
 namespace common\components\nested\src\widgets\nestable;
 
 use common\components\nested\src\interfaces\TreeInterface;
+use common\models\categories\Category;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
@@ -121,12 +122,13 @@ class Nestable extends Widget
         /** @var ActiveRecord|TreeInterface $model */
         $model = $this->modelClass;
 
+        $this->_items = $model::find()->roots()->asArray()->all();
 
-        /** @var ActiveRecord $rootNode */
-        foreach ($model::find()->roots()->all() as $rootNode) {
-
-            $this->_items[] = $this->prepareItems($rootNode->populateTree());
-        }
+//        /** @var ActiveRecord $rootNode */
+//        foreach ($model::find()->roots()->all() as $rootNode) {
+//
+//            $this->_items[] = $this->prepareItems($rootNode->populateTree());
+//        }
     }
 
     /**
@@ -182,7 +184,7 @@ class Nestable extends Widget
         $this->actionButtons();
 
         Pjax::begin([
-            'id' => $this->id . '-pjax'
+            'id' => $this->id.'-pjax',
         ]);
         $this->registerPluginAssets();
         $this->renderMenu();
@@ -310,20 +312,20 @@ class Nestable extends Widget
         echo Html::beginTag('div', ['class' => "{$this->id}-nestable-menu"]);
 
         echo Html::beginTag('div', ['class' => 'btn-group']);
-        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Add node'), [
-            'data-toggle' => 'modal',
-            'data-target' => "#{$this->id}-new-node-modal",
-            'class'       => 'btn btn-success'
-        ]);
-        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Collapse all'), [
-            'data-action' => 'collapse-all',
-            'class'       => 'btn btn-default'
-        ]);
-        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Expand all'), [
-            'data-action' => 'expand-all',
-            'class'       => 'btn btn-default',
-            'style'       => 'display: none'
-        ]);
+//        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Add node'), [
+//            'data-toggle' => 'modal',
+//            'data-target' => "#{$this->id}-new-node-modal",
+//            'class'       => 'btn btn-success',
+//        ]);
+//        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Collapse all'), [
+//            'data-action' => 'collapse-all',
+//            'class'       => 'btn btn-default',
+//        ]);
+//        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Expand all'), [
+//            'data-action' => 'expand-all',
+//            'class'       => 'btn btn-default',
+//            'style'       => 'display: none',
+//        ]);
         echo Html::endTag('div');
 
         echo Html::endTag('div');
@@ -336,7 +338,15 @@ class Nestable extends Widget
     {
         echo Html::beginTag('div', ['class' => 'dd-nestable', 'id' => $this->id]);
 
-        $this->printLevel($this->_items);
+        if (!$this->_items) {
+            foreach ($this->modelClass::find()->asArray()->all() as $item) {
+                $this->printItem($item);
+            }
+        }
+
+        foreach ($this->_items as $root_item) {
+            $this->printLevel($root_item);
+        }
 
         echo Html::endTag('div');
     }
@@ -359,7 +369,7 @@ class Nestable extends Widget
 HTML;
         /** @var ActiveForm $form */
         $form = ActiveForm::begin([
-            'id' => $this->id . '-new-node-form'
+            'id' => $this->id.'-new-node-form',
         ]);
 
         echo <<<HTML
@@ -388,17 +398,62 @@ HTML;
     }
 
     /**
-     * @param $roots
+     * @param $root_item
      */
-    private function printLevel($roots)
+    private function printLevel($root_item)
+    {
+        $this->printRoot($root_item);
+    }
+
+    /**
+     * Распечатка одного пункта
+     * @param $item
+     */
+    private function printRoot($item)
     {
         echo Html::beginTag('ol', ['class' => 'dd-list']);
+        echo '<hr>';
         echo '<pre>';
+        $htmlOptions = ['class' => 'dd-item'];
+        $htmlOptions['data-id'] = !empty($item['id']) ? $item['id'] : '';
 
-        foreach ($roots as $root) {
-            foreach ($root as $item) {
-                $this->printItem($item);
-            }
+        echo '<h2>';
+//        echo Html::tag('div', '', ['class' => 'dd-handle']);
+        echo Html::tag('div', $item['name'], ['class' => 'dd-content']);
+
+        echo Html::beginTag('div', ['class' => 'dd-edit-panel']);
+        echo Html::input('text', null, $item['name'],
+            ['class' => 'dd-input-name', 'placeholder' => $this->getPlaceholderForName()]);
+
+        echo Html::beginTag('div', ['class' => 'btn-group']);
+        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Save'), [
+            'data-action' => 'save',
+            'class'       => 'btn btn-success btn-sm',
+        ]);
+        echo Html::a(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Remove Root'),
+            '', [
+                'data-action' => 'advanced-editing',
+                'class'       => 'btn btn-warning btn-sm remove_root',
+                'data-id'     => $item['id'],
+            ]);
+        echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Delete'), [
+            'data-action' => 'delete',
+            'class'       => 'btn btn-danger btn-sm',
+        ]);
+        echo Html::endTag('div');
+
+        echo Html::endTag('div');
+
+        if (isset($item['children']) && count($item['children'])) {
+            $this->printLevel($item['children']);
+        }
+        echo '</h2>';
+//        echo Html::endTag('li');
+
+        $children = $this->modelClass::find()->where(['id' => $item['id']])->one()->getChildren()->asArray()->all();
+
+        foreach ($children as $item) {
+            $this->printItem($item, $root_item);
         }
 
         echo Html::endTag('ol');
@@ -410,9 +465,7 @@ HTML;
      */
     private function printItem($item)
     {
-        echo '<pre>';
-        print_r($item);
-        die();
+
         $htmlOptions = ['class' => 'dd-item'];
         $htmlOptions['data-id'] = !empty($item['id']) ? $item['id'] : '';
 
@@ -430,15 +483,23 @@ HTML;
             'data-action' => 'save',
             'class'       => 'btn btn-success btn-sm',
         ]);
-        echo Html::a(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Advanced editing'),
-            $item['update-url'], [
+
+        echo Html::a(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Make Root'),
+            '', [
                 'data-action' => 'advanced-editing',
-                'class'       => 'btn btn-default btn-sm',
-                'target'      => '_blank'
+                'class'       => 'btn btn-warning btn-sm make_root',
+                'data-id'     => $item['id'],
             ]);
+
+//        echo Html::a(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Make Root'),
+//            $item['update-url'], [
+//                'data-action' => 'advanced-editing',
+//                'class'       => 'btn btn-default btn-sm',
+//                'target'      => '_blank',
+//            ]);
         echo Html::button(Yii::t('vendor/voskobovich/yii2-tree-manager/widgets/nestable', 'Delete'), [
             'data-action' => 'delete',
-            'class'       => 'btn btn-danger btn-sm'
+            'class'       => 'btn btn-danger btn-sm',
         ]);
         echo Html::endTag('div');
 

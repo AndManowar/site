@@ -2,6 +2,34 @@
  * Nestable jQuery Plugin - Copyright (c) 2012 David Bushell - http://dbushell.com/
  * Dual-licensed under the BSD or MIT licenses
  */
+
+
+$(document).on('click', '.make_root', function (e) {
+    $.ajax({
+        type: 'POST',
+        url: '/dashboard/ajax/make-root',
+        data: {id: $(this).data('id')},
+        success: function () {
+        },
+        error: function () {
+            alert('Error');
+        }
+    });
+});
+
+$(document).on('click', '.remove_root', function (e) {
+    $.ajax({
+        type: 'POST',
+        url: '/dashboard/ajax/remove-root',
+        data: {id: $(this).data('id')},
+        success: function () {
+        },
+        error: function () {
+            alert('Error');
+        }
+    });
+});
+
 ;
 (function ($, window, document, undefined) {
     var hasTouch = 'ontouchstart' in window;
@@ -286,13 +314,15 @@
             mouse.startX = mouse.lastX = e.pageX;
             mouse.startY = mouse.lastY = e.pageY;
 
+            console.log(this.options.listNodeName);
+
             this.dragRootEl = this.el;
 
             this.dragEl = $(document.createElement(this.options.listNodeName)).addClass(this.options.listClass + ' ' + this.options.dragClass);
             this.dragEl.css('width', dragItem.width());
 
             // fix for zepto.js
-            //dragItem.after(this.placeEl).detach().appendTo(this.dragEl);
+            // dragItem.after(this.placeEl).detach().appendTo(this.dragEl);
             dragItem.after(this.placeEl);
             dragItem[0].parentNode.removeChild(dragItem[0]);
             dragItem.appendTo(this.dragEl);
@@ -374,7 +404,7 @@
                 url: this.options.deleteUrl + '?id=' + id,
                 method: 'POST',
                 context: document.body,
-	            success: function () {
+                success: function () {
                     $.pjax.reload({container: '#' + tree.el.attr('id') + '-pjax'});
                 },
             }).fail(function (jqXHR) {
@@ -399,7 +429,7 @@
                 data: {
                     name: name.val()
                 },
-	            success: function () {
+                success: function () {
                     var editPanel = el.children('.' + tree.options.editPanelClass);
                     editPanel.removeClass(tree.options.inputOpenClass);
                     editPanel.slideUp(100);

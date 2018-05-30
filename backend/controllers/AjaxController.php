@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 use common\components\tasks\models\Task;
 use common\components\tasks\services\TaskService;
+use common\models\categories\Category;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -57,6 +58,7 @@ class AjaxController extends Controller
         }
 
         Yii::$app->response->statusCode = 500;
+
         return false;
     }
 
@@ -78,6 +80,7 @@ class AjaxController extends Controller
         }
 
         Yii::$app->response->statusCode = 500;
+
         return false;
     }
 
@@ -144,6 +147,28 @@ class AjaxController extends Controller
         }
 
         return $this->renderAjax('/task/_form', ['task' => $task]);
+    }
+
+    /**
+     * Mark category as a root
+     *
+     * @return bool
+     */
+    public function actionMakeRoot()
+    {
+        return Category::findOneStrictException(Yii::$app->request->post('id'))->makeRoot()->save();
+    }
+
+    /**
+     * Mark category as a child
+     *
+     * @return bool
+     */
+    public function actionRemoveRoot()
+    {
+        return Category::findOneStrictException(Yii::$app->request->post('id'))
+            ->appendTo(Category::find()->roots()->one())
+            ->save();
     }
 
     /**

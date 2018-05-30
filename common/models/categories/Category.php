@@ -26,6 +26,8 @@ use yiidreamteam\upload\ImageUploadBehavior;
  * @property int $created_at
  * @property int $updated_at
  *
+ * @property Category $parent
+ *
  * @method Category makeRoot();
  * @method string getImageFileUrl(string $fileName);
  * @method Category appendTo($model);
