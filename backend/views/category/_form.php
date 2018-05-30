@@ -85,13 +85,8 @@ $this->registerJsFile('@web/js/category-js.js');
                     <div class="col-md-12">
                         <div class="col-md-2 col-md-offset-1">
                             <?= $form->field($model, 'is_root')->widget(SwitchInput::class, [
-                                'type'          => SwitchInput::CHECKBOX,
-                                'pluginOptions' => [
-                                    'handleWidth' => 60,
-                                    'onText'      => 'Корневой элемент',
-                                    'offText'     => 'Не корневой',
-                                ],
-                                'pluginEvents'  => [
+                                'type'         => SwitchInput::CHECKBOX,
+                                'pluginEvents' => [
                                     "switchChange.bootstrapSwitch" => "function() { 
                                 if($(this).is(':checked')) {
                                 $('.tree_options').addClass('hidden');}
@@ -102,7 +97,7 @@ $this->registerJsFile('@web/js/category-js.js');
                         <div class="col-md-6 col-md-offset-1">
                             <div class="tree_options hidden">
                                 <?php if (!empty($roots)) {
-                                    echo $form->field($model, 'tree_id')->widget(Select2::class, [
+                                    echo $form->field($model, 'root')->widget(Select2::class, [
                                         'data'          => $roots,
                                         'language'      => 'ru',
                                         'options'       => ['placeholder' => 'Выбрать корневой элемент', 'class' => 'selected_tree'],
@@ -121,19 +116,17 @@ $this->registerJsFile('@web/js/category-js.js');
                     if ($model->is_root) {
                         echo '<h1 class="text-center txt-color-red"> Корневой элемент </h1>';
                     } else {
-                        echo '<h1 class="text-center txt-color-red"> Дочерний элемент, предок - '.\common\models\categories\Category::find()->roots()->where(['tree' => $model->tree_id])->one()->name.'</h1>';
+                        echo '<h1 class="text-center txt-color-red"> Дочерний элемент, предок - ' . \common\models\categories\Category::find()->roots()->where(['id' => $model->root])->one()->name . '</h1>';
                     }
                 }
-                echo '</div>';
-                ?>
-
-            <hr>
-            <div class="col-md-12">
-                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-fill btn-success']) ?>
+                echo '</div>'; ?>
                 <hr>
+                <div class="col-md-12">
+                    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-fill btn-success']) ?>
+                    <hr>
+                </div>
+                <?php ActiveForm::end() ?>
             </div>
-            <?php ActiveForm::end() ?>
         </div>
-    </div>
     </div>
 </article>

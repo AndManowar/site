@@ -9,6 +9,7 @@
 namespace common\models\categories;
 
 use creocoder\nestedsets\NestedSetsQueryBehavior;
+use paulzi\adjacencyList\AdjacencyListQueryTrait;
 use yii\db\ActiveQuery;
 
 /**
@@ -19,9 +20,5 @@ use yii\db\ActiveQuery;
  */
 class CategoryQuery extends ActiveQuery
 {
-    public function behaviors() {
-        return [
-            NestedSetsQueryBehavior::class,
-        ];
-    }
+    use AdjacencyListQueryTrait;
 }

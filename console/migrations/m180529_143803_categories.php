@@ -27,11 +27,8 @@ class m180529_143803_categories extends Migration
             'title'            => $this->string(255),
             'keywords'         => $this->string(255),
             'description'      => $this->string(255),
-            'tree'             => $this->integer()->notNull(),
-            'is_root'          => $this->boolean(),
-            'lft'              => $this->integer()->notNull(),
-            'rgt'              => $this->integer()->notNull(),
-            'depth'            => $this->integer()->notNull(),
+            'parent_id'        => $this->boolean(),
+            'sort'             => $this->integer()->null(),
             'created_at'       => $this->integer(),
             'updated_at'       => $this->integer(),
         ], $tableOptions);

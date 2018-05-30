@@ -30,10 +30,11 @@
     "kartik-v/yii2-widget-select2": "@dev",
     "supplyhog/yii2-clipboardjs" : "dev-master",
     "almasaeed2010/adminlte": "~2.4",
-    "creocoder/yii2-nested-sets": "^0.9.0",
     "mihaildev/yii2-ckeditor": "1.0.1",
     "mihaildev/yii2-elfinder": "1.2.0",
-    "yii-dream-team/yii2-upload-behavior": "*"
+    "yii-dream-team/yii2-upload-behavior": "*",
+    "voskobovich/yii2-tree-manager": "~1.0",
+    "paulzi/yii2-adjacency-list": "^2.1"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.0.0",

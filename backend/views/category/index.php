@@ -1,5 +1,6 @@
 <?php
 
+use common\models\categories\Category;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -22,7 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="jarviswidget-editbox">
                     </div>
                     <a href="<?= Url::toRoute(['category/create']) ?>" class="btn btn-success"><i
-                            class="fa fa-lg fa-fw fa-plus"></i></a>
+                                class="fa fa-lg fa-fw fa-plus"></i></a>
+                    <a href="<?= Url::toRoute(['category/configurate-tree']) ?>" class="btn btn-warning"><i
+                                class="fa fa-lg fa-fw fa-gear"></i></a>
                     <br>
                     <br>
                     <div class="widget-body no-padding">
@@ -45,6 +48,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'contentOptions' => ['class' => 'text-center']
                                 ],
                                 'name',
+                                'caption',
+                                [
+                                    'format' => 'html',
+                                    'label'  => 'Положение в дереве',
+                                    'value'  => function ($model) {
+                                        /** @var Category $model */
+                                        if ($model->isRoot()) {
+                                            return '<span class="label label-success">Root</span>';
+                                        }
+
+                                        return '<span class="label label-danger">Child for "' . Category::find()->roots()->andWhere(['id' => $model->parent_id])->one()->name . '"</span>';
+                                    }
+                                ],
+                                [
+                                    'label'  => 'Картинка',
+                                    'format' => 'html',
+                                    'value'  => function ($model) {
+                                        return Html::img('@frontend/web/uploads/images/'.$model->image);
+                                    },
+                                ],
                                 'description_text',
                                 'created_at:datetime',
                                 [

@@ -13,12 +13,10 @@ use yii\base\Model;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
-use yiidreamteam\upload\ImageUploadBehavior;
 
 /**
  * Class CategoryForm
  * @package common\models\forms
- * @method string getImageFileUrl(string $fileName);
  */
 class CategoryForm extends Model
 {
@@ -70,7 +68,7 @@ class CategoryForm extends Model
     /**
      * @var int
      */
-    public $tree_id = 0;
+    public $root;
 
     /**
      * @var Category
@@ -85,36 +83,16 @@ class CategoryForm extends Model
         return [
             [['name', 'alias'], 'required'],
             ['is_root', 'boolean'],
-            ['tree_id', 'integer'],
+            ['root', 'integer'],
             ['alias', 'unique', 'targetClass' => Category::class, 'filter' => !$this->category->isNewRecord ? ['!=', 'id', $this->category->id] : null],
             ['file', 'file', 'maxFiles' => 1, 'mimeTypes' => 'image/*'],
             [['description_text'], 'string'],
-            [['is_root', 'tree_id'], function ($attribute) {
-                if (!$this->is_root && $this->tree_id == 0) {
-                    $this->addError($attribute, 'Необходимо выбрать конфигурацию категории');
-                }
-            }],
             [['name', 'alias', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
         ];
     }
 
     /**
      * @return array
-     */
-    public function behaviors()
-    {
-        return [
-            [
-                'class'     => ImageUploadBehavior::class,
-                'attribute' => 'file',
-                'filePath'  => '@webroot/uploads/images/[[pk]].[[extension]]',
-                'fileUrl'   => '[[filename]].[[extension]]',
-            ],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -128,11 +106,12 @@ class CategoryForm extends Model
             'title'            => 'Title',
             'keywords'         => 'Keywords',
             'description'      => 'Description',
-            'tree'             => 'Tree',
+            'level'            => 'Level',
             'lft'              => 'Lft',
             'rgt'              => 'Rgt',
             'depth'            => 'Depth',
-            'is_root'          => 'Позиция в дереве',
+            'is_root'          => 'Сделать корневым элементом?',
+            'root'             => 'Родительский элемент',
         ];
     }
 
@@ -140,10 +119,19 @@ class CategoryForm extends Model
      * CategoryForm constructor.
      * @param null $id
      * @param array $config
+     * @throws NotFoundHttpException
      */
     public function __construct($id = null, array $config = [])
     {
         $this->category = $this->getCategory($id);
+
+        if (!$this->category->isNewRecord && !$this->category->isRoot()) {
+            $this->is_root = false;
+        }
+
+        if (!$this->is_root) {
+            $this->root = Category::getDefaultRootValue();
+        }
 
         parent::__construct($config);
     }
@@ -160,7 +148,6 @@ class CategoryForm extends Model
         }
 
         $category = Category::findOneStrictException($id);
-        $this->tree_id = $category->tree;
         $this->setAttributes($category->getAttributes(), false);
 
         return $category;
@@ -168,6 +155,7 @@ class CategoryForm extends Model
 
     /**
      * @return bool
+     * @throws BadRequestHttpException
      */
     public function create()
     {
@@ -201,26 +189,27 @@ class CategoryForm extends Model
      */
     private function setUploadedImage()
     {
-        $this->file = UploadedFile::getInstance($this, 'file');
-        $this->category->image = $this->getImageFileUrl('file');
+        $this->category->file = UploadedFile::getInstance($this, 'file');
+        $this->category->image = $this->category->getImageFileUrl('file');
     }
 
     /**
-     * @throws BadRequestHttpException
+     * Set category to tree on create or update
+     *
      * @return boolean
+     * @throws BadRequestHttpException
      */
     private function setToTree()
     {
-        if (!$this->is_root && $this->tree_id == 0) {
-            throw new BadRequestHttpException('Invalid tree configuration');
+        if (!$this->is_root && $this->root <= 0) {
+            throw new BadRequestHttpException('Element must be a root or a child of some tree');
         }
 
-        if ($this->is_root) {
-            return $this->category->makeRoot();
+        if (!$this->is_root && $this->root > 0) {
+            $parent = Category::find()->roots()->where(['id' => $this->root])->one();
+            return $this->category->appendTo($parent)->save();
         }
 
-        $parent = Category::find()->roots()->where(['tree' => $this->tree_id])->one();
-
-        return $this->category->appendTo($parent);
+        return $this->category->makeRoot()->save();
     }
 }

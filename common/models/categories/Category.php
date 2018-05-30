@@ -3,9 +3,11 @@
 namespace common\models\categories;
 
 use common\models\AppActiveRecord;
-use creocoder\nestedsets\NestedSetsBehavior;
+use paulzi\adjacencyList\AdjacencyListBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
+use yiidreamteam\upload\ImageUploadBehavior;
 
 /**
  * This is the model class for table "categories".
@@ -19,19 +21,22 @@ use yii\helpers\ArrayHelper;
  * @property string $title
  * @property string $keywords
  * @property string $description
- * @property int $tree
- * @property boolean $is_root
- * @property int $lft
- * @property int $rgt
- * @property int $depth
+ * @property int $parent_id
+ * @property boolean $sort
  * @property int $created_at
  * @property int $updated_at
  *
- * @method bool makeRoot();
- * @method bool appendTo($model);
+ * @method Category makeRoot();
+ * @method string getImageFileUrl(string $fileName);
+ * @method Category appendTo($model);
  */
 class Category extends AppActiveRecord
 {
+    /**
+     * @var UploadedFile
+     */
+    public $file;
+
     /**
      * {@inheritdoc}
      */
@@ -47,9 +52,12 @@ class Category extends AppActiveRecord
     {
         return [
             TimestampBehavior::class,
-            'tree' => [
-                'class'         => NestedSetsBehavior::class,
-                'treeAttribute' => 'tree',
+            AdjacencyListBehavior::class,
+            [
+                'class'     => ImageUploadBehavior::class,
+                'attribute' => 'file',
+                'filePath'  => '@frontend/web/uploads/images/[[pk]].[[extension]]',
+                'fileUrl'   => '[[filename]].[[extension]]',
             ],
         ];
     }
@@ -69,11 +77,8 @@ class Category extends AppActiveRecord
             'title'            => 'Title',
             'keywords'         => 'Keywords',
             'description'      => 'Description',
-            'tree'             => 'Tree',
-            'lft'              => 'Lft',
-            'rgt'              => 'Rgt',
-            'is_root'          => 'Is Root',
-            'depth'            => 'Depth',
+            'parent_id'        => 'Parent',
+            'sort'             => 'Sort',
             'created_at'       => 'Created At',
             'updated_at'       => 'Updated At',
         ];
@@ -111,6 +116,24 @@ class Category extends AppActiveRecord
             $query->where(['!=', 'id', $id]);
         }
 
-        return ArrayHelper::map($query->all(), 'tree', 'name');
+        return ArrayHelper::map($query->all(), 'id', 'name');
+    }
+
+    /**
+     * Get first available root for dropdown
+     *
+     * @return integer
+     */
+    public static function getDefaultRootValue()
+    {
+        return self::find()->roots()->one()->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRoot()
+    {
+        return self::find()->roots()->andWhere(['id' => $this->id])->exists();
     }
 }
