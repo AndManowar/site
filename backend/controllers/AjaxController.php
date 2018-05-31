@@ -17,7 +17,6 @@ use common\models\products\ProductColor;
 use common\models\products\ProductImage;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
