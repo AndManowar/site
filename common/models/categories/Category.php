@@ -58,7 +58,7 @@ class Category extends AppActiveRecord
             [
                 'class'     => ImageUploadBehavior::class,
                 'attribute' => 'file',
-                'filePath'  => '@frontend/web/uploads/images/[[filename]].[[extension]]',
+                'filePath'  => '@categoryImagePath/[[filename]].[[extension]]',
                 'fileUrl'   => '[[filename]].[[extension]]',
             ],
         ];

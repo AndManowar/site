@@ -2,19 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: manowartop
- * Date: 29.05.2018
- * Time: 17:59
+ * Date: 31.05.18
+ * Time: 14:02
  */
 
-namespace common\models\categories;
+namespace common\models\products;
 
 use yii\data\ActiveDataProvider;
 
 /**
- * Class CategorySearch
- * @package common\models\categories
+ * Class ColorSearch
+ * @package common\models\products
  */
-class CategorySearch extends Category
+class ColorSearch extends Color
 {
     /**
      * @return array
@@ -36,15 +36,13 @@ class CategorySearch extends Category
         $query = self::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query'      => $query,
+            'query' => $query,
             'pagination' => [
                 'pageSize' => 10,
             ]
         ]);
 
         $this->load($params);
-
-        $query->andFilterWhere(['like', 'name', $this->name]);
 
         if (!$this->validate()) {
 

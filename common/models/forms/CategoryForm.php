@@ -199,7 +199,7 @@ class CategoryForm extends Model
      */
     public function getPreviewImage()
     {
-        return Yii::getAlias('@imagePath/') . $this->category->image;
+        return Yii::getAlias('@categoryImagePreviewPath/') . $this->category->image;
     }
 
     /**
@@ -216,7 +216,9 @@ class CategoryForm extends Model
     private function setUploadedImage()
     {
         $this->category->file = UploadedFile::getInstance($this, 'file');
-        $this->category->image = $this->category->getImageFileUrl('file');
+        if ($this->category->file) {
+            $this->category->image = $this->category->getImageFileUrl('file');
+        }
     }
 
     /**

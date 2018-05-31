@@ -18,7 +18,9 @@ class DirectoryController extends Controller
      * @var array
      */
     private $directoriesAliases = [
-        '@uploadPath',
+        '@categoryImagePath',
+        '@productImagePath',
+        '@colorImagePath',
     ];
 
     /**
@@ -29,17 +31,17 @@ class DirectoryController extends Controller
     {
         $existNewDir = false;
 
-        foreach($this->directoriesAliases as $alias){
+        foreach ($this->directoriesAliases as $alias) {
 
-            if(!empty(Yii::$aliases[$alias])){
+            if (!empty(Yii::$aliases[$alias])) {
 
                 $path = Yii::$aliases[$alias];
 
-                if(!file_exists($path)){
+                if (!file_exists($path)) {
 
                     $existNewDir = true;
 
-                    if(!FileHelper::createDirectory($path, 0777)){
+                    if (!FileHelper::createDirectory($path, 0777)) {
                         $this->stdout("Failed to create directory: '$path'\n");
                     } else {
                         $this->stdout("The directory was created successfully: '$path'\n");
@@ -49,7 +51,7 @@ class DirectoryController extends Controller
             }
         }
 
-        if(!$existNewDir) {
+        if (!$existNewDir) {
             $this->stdout("No new directories found.\n");
         }
 
