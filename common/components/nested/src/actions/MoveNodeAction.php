@@ -43,15 +43,21 @@ class MoveNodeAction extends BaseAction
                 if ($parentModel->isRoot()) {
                     return $model->appendTo($parentModel)->save();
                 } else {
-                    return $model->insertAfter($parentModel)->save();
+                    if ($model->isRoot()) {
+                        echo '<pre>';
+                        print_r($model->attributes);
+                        print_r($form->attributes);
+                        die();
+                    } else {
+                        return $model->insertAfter($parentModel)->save();
+                    }
                 }
             } elseif ($form->next_id > 0) {
                 $parentModel = $this->findModel($form->next_id);
-
                 return $model->insertBefore($parentModel)->save();
+
             } elseif ($form->parent_id > 0) {
                 $parentModel = $this->findModel($form->parent_id);
-
                 return $model->appendTo($parentModel)->save();
             }
         } catch (Exception $ex) {

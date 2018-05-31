@@ -343,6 +343,7 @@ $(document).on('click', '.remove_root', function (e) {
             }
         },
 
+
         dragStop: function (e) {
             // fix for zepto.js
             //this.placeEl.replaceWith(this.dragEl.children(this.options.itemNodeName + ':first').detach());

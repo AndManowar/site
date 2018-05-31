@@ -184,7 +184,7 @@ class Nestable extends Widget
         $this->actionButtons();
 
         Pjax::begin([
-            'id' => $this->id.'-pjax',
+            'id' => $this->id . '-pjax',
         ]);
         $this->registerPluginAssets();
         $this->renderMenu();
@@ -369,7 +369,7 @@ class Nestable extends Widget
 HTML;
         /** @var ActiveForm $form */
         $form = ActiveForm::begin([
-            'id' => $this->id.'-new-node-form',
+            'id' => $this->id . '-new-node-form',
         ]);
 
         echo <<<HTML
@@ -411,14 +411,18 @@ HTML;
      */
     private function printRoot($item)
     {
-        echo Html::beginTag('ol', ['class' => 'dd-list']);
+        echo Html::beginTag('ol', [
+            'class' => 'dd-list parent_list',
+            'data-parent' => $item['id']
+        ]);
         echo '<hr>';
         echo '<pre>';
         $htmlOptions = ['class' => 'dd-item'];
         $htmlOptions['data-id'] = !empty($item['id']) ? $item['id'] : '';
 
         echo '<h2>';
-//        echo Html::tag('div', '', ['class' => 'dd-handle']);
+        echo Html::beginTag('li', $htmlOptions);
+        echo Html::tag('div', '', ['class' => 'dd-handle']);
         echo Html::tag('div', $item['name'], ['class' => 'dd-content']);
 
         echo Html::beginTag('div', ['class' => 'dd-edit-panel']);
@@ -448,12 +452,16 @@ HTML;
             $this->printLevel($item['children']);
         }
         echo '</h2>';
-//        echo Html::endTag('li');
+        echo Html::endTag('li');
 
         $children = $this->modelClass::find()->where(['id' => $item['id']])->one()->getChildren()->asArray()->all();
 
-        foreach ($children as $item) {
-            $this->printItem($item, $root_item);
+        if (empty($children)) {
+           // $this->printEmptyItem();
+        } else {
+            foreach ($children as $item) {
+                $this->printItem($item);
+            }
         }
 
         echo Html::endTag('ol');
@@ -501,6 +509,39 @@ HTML;
             'data-action' => 'delete',
             'class'       => 'btn btn-danger btn-sm',
         ]);
+        echo Html::endTag('div');
+
+        echo Html::endTag('div');
+
+        if (isset($item['children']) && count($item['children'])) {
+            $this->printLevel($item['children']);
+        }
+
+        echo Html::endTag('li');
+    }
+
+    /**
+     * Распечатка одного пункта
+     */
+    private function printEmptyItem()
+    {
+
+        $item = [
+            'name' => 'Empty Item'
+        ];
+
+        $htmlOptions = ['class' => 'dd-item'];
+        $htmlOptions['data-id'] = !empty($item['id']) ? $item['id'] : '';
+
+        echo Html::beginTag('li', $htmlOptions);
+
+        echo Html::tag('div', '', ['class' => 'dd-handle']);
+        echo Html::tag('div', $item['name'], ['class' => 'dd-content']);
+
+        echo Html::beginTag('div', ['class' => 'dd-edit-panel']);
+        echo Html::input('text', null, $item['name'],
+            ['class' => 'dd-input-name', 'placeholder' => $this->getPlaceholderForName()]);
+
         echo Html::endTag('div');
 
         echo Html::endTag('div');

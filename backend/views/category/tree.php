@@ -6,7 +6,7 @@
  * Time: 15:55
  */
 
-
+$this->title = 'Настройка категорий';
 \backend\assets\MainpageAsset::register($this);
 ?>
 
