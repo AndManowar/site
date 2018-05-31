@@ -111,7 +111,7 @@ class ProductForm extends Model
     public function rules()
     {
         return [
-            [['name', 'price', 'width', 'height', 'thickness', 'caption', 'description', 'title', 'keywords', 'description_text', 'category_id', 'title_file'], 'required'],
+            [['name', 'price', 'width', 'height', 'thickness', 'caption', 'description', 'title', 'keywords', 'description_text', 'category_id'], 'required'],
             [['price', 'old_price', 'width', 'height', 'thickness'], 'number'],
             [['description_text'], 'string'],
             ['is_shown', 'boolean'],
@@ -162,7 +162,6 @@ class ProductForm extends Model
             $this->product = Product::findOneStrictException($id);
             $this->setAttributes($this->product->getAttributes(), false);
         }
-
         parent::__construct($config);
     }
 
@@ -194,8 +193,30 @@ class ProductForm extends Model
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function update()
     {
+        if (!$this->validate()) {
+            return false;
+        }
+
+        $this->setUploadedImage();
+        $this->product->setAttributes($this->getAttributes(), false);
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        if (!$this->product->save()) {
+            $transaction->rollBack();
+        }
+
+        if (!$this->setAdditionalImages()) {
+            $transaction->rollBack();
+        }
+
+        $transaction->commit();
+
         return true;
     }
 
@@ -222,7 +243,8 @@ class ProductForm extends Model
     {
         $result = [];
         foreach ($this->product->getSortedImages() as $productImage) {
-            $result[]['content'] = "<img src='{$productImage->getPreview()}' class='thumbnail image_sort' data-id='{$productImage->id}' style='width: 200px;'><i class='fa fa-list'></i>";
+            $result[]['content'] = "<img src='{$productImage->getPreview()}' class='thumbnail image_sort' data-id='{$productImage->id}' style='width:200px;'><i class='fa fa-list'></i><a href='' class='pull-right delete_image_button' data-id='{$productImage->id}'><i
+                                            class=\"fa fa-lg fa-fw fa-trash\"></i></a>";
         }
 
         return $result;

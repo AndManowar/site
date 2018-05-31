@@ -26,6 +26,7 @@ class Color extends AppActiveRecord
      * @var UploadedFile
      */
     public $file;
+
     /**
      * {@inheritdoc}
      */

@@ -73,18 +73,14 @@ class ProductController extends baseController
     public function actionStepTwo($id)
     {
         $model = new ProductForm($id);
+
         /** @var Product $product */
         $product = $model->product;
 
-        if ($model->load(Yii::$app->request->post())) {
-
-
-        }
-
         return $this->render('step-two', [
-            'model'  => $model,
-            'data'   => $product->productsColors ? $product->productsColors : [new ProductColor()],
-            'colors' => ArrayHelper::map(Color::find()->all(), 'id', 'name'),
+            'model'         => $model,
+            'colors'        => ArrayHelper::map(Color::find()->all(), 'id', 'name'),
+            'productColors' => $product->productsColors,
         ]);
     }
 
@@ -99,6 +95,9 @@ class ProductController extends baseController
 
         if ($model->load(Yii::$app->request->post())) {
 
+            $model->title_file = UploadedFile::getInstance($model, 'title_file');
+            $model->files = UploadedFile::getInstances($model, 'files');
+
             if ($model->update()) {
                 Yii::$app->session->setFlash('success', 'Товар обновлен');
 
@@ -110,5 +109,74 @@ class ProductController extends baseController
             'model'      => $model,
             'categories' => ArrayHelper::map(Category::find()->all(), 'id', 'name'),
         ]);
+    }
+
+    /**
+     * Add color action
+     *
+     * @param int $id
+     * @return \yii\web\Response
+     */
+    public function actionAddColor($id)
+    {
+        $color = new ProductColor();
+
+        if ($color->load(Yii::$app->request->post())) {
+
+            if (ProductColor::find()->where(['product_id' => $id])->andWhere(['color_id' => $color->color_id])->exists()) {
+                Yii::$app->session->setFlash('danger', 'Этот цвет уже добавлен');
+
+                return $this->redirect(['step-two', 'id' => $id]);
+            }
+
+            if ($color->save()) {
+                Yii::$app->session->setFlash('success', 'Цвет добавлен');
+            } else {
+                Yii::$app->session->setFlash('danger', 'Ошибка при добавлении цвета');
+            }
+        }
+
+        return $this->redirect(['step-two', 'id' => $id]);
+    }
+
+    /**
+     * Add color action
+     *
+     * @param int $id
+     * @return \yii\web\Response
+     */
+    public function actionEditColor($id)
+    {
+        $color = ProductColor::findOneStrictException($id);
+
+        if ($color->load(Yii::$app->request->post())) {
+
+            if ($color->save()) {
+                Yii::$app->session->setFlash('success', 'Цвет изменен');
+            } else {
+                Yii::$app->session->setFlash('danger', 'Ошибка при добавлении цвета');
+            }
+        }
+
+        return $this->redirect(['step-two', 'id' => $id]);
+    }
+
+    /**
+     * Delete color action
+     *
+     * @param int $id
+     * @return \yii\web\Response
+     */
+    public function actionDeleteColor($id)
+    {
+        $color = ProductColor::findOneStrictException($id);
+
+        if ($color->delete()) {
+            Yii::$app->session->setFlash('warning', 'Цвет удален');
+        } else {
+            Yii::$app->session->setFlash('danger', 'Невозможно удалить цвет');
+        }
+
+        return $this->redirect(['step-two', 'id' => $color->product_id]);
     }
 }

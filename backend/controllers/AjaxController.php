@@ -12,7 +12,11 @@ use common\components\tasks\models\Task;
 use common\components\tasks\services\TaskService;
 use common\models\categories\Category;
 use common\models\forms\ProductForm;
+use common\models\products\Color;
+use common\models\products\ProductColor;
+use common\models\products\ProductImage;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -174,19 +178,44 @@ class AjaxController extends Controller
     }
 
     /**
-     * @return array
+     * @return boolean
      * @throws BadRequestHttpException
      */
     public function actionSaveProductSettings()
     {
         $productForm = new ProductForm(Yii::$app->request->post('product_id'));
 
-        if ($productForm->setColors(Yii::$app->request->post('form_data'))
-            && $productForm->setSortOrder(Yii::$app->request->post('sort_order'))
-        ) {
-            return ['url' => Url::toRoute(['product/index'])];
+        if ($productForm->setSortOrder(Yii::$app->request->post('sort_order'))) {
+            Yii::$app->response->statusCode = 200;
+
+            return true;
         }
 
         throw new BadRequestHttpException();
+    }
+
+    /**
+     * @return string
+     */
+    public function actionGetColorForm()
+    {
+        return $this->renderPartial('/product/color_edit_form', [
+            'model'  => ProductColor::findOneStrictException(Yii::$app->request->post('id')),
+            'colors' => ArrayHelper::map(Color::find()->all(), 'id', 'name'),
+        ]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function actionDeleteImage()
+    {
+        if (ProductImage::findOneStrictException(Yii::$app->request->post('id'))->delete()) {
+            Yii::$app->response->statusCode = 200;
+        } else {
+            Yii::$app->response->statusCode = 500;
+        }
+
+        return true;
     }
 }

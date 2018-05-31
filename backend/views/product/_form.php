@@ -30,8 +30,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 
             </div>
             <?php
-            if(!$isNewRecord){
-                echo Html::a('Дополнительные настройки товара', Url::toRoute(['product/step-two', 'id' => $model->product->id]), ['class' => 'btn btn-warning']);}
+            if (!$isNewRecord) {
+                echo Html::a('Дополнительные настройки товара', Url::toRoute(['product/step-two', 'id' => $model->product->id]), ['class' => 'btn btn-warning']);
+            }
             ?>
             <div class="widget-body no-padding">
                 <hr>
@@ -77,10 +78,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     <?= $form->field($model, 'title_file')->widget(FileInput::class, [
                         'options'       => ['multiple' => false, 'accept' => 'image/*'],
                         'pluginOptions' => [
-                            'previewFileType'      => 'any',
-                            'maxFileSize'          => 10000,
-                             'initialPreview'       => !$isNewRecord ? $model->getPreview()['title'] : [],
-                            'initialPreviewAsData' => true,
+                            'previewFileType'          => 'any',
+                            'maxFileSize'              => 10000,
+                            'initialPreview'           => !$isNewRecord ? $model->getPreview()['title'] : [],
+                            'initialPreviewAsData'     => true,
                         ]])
                     ?>
                 </div>
@@ -115,15 +116,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     <?= $form->field($model, 'files[]')->widget(FileInput::class, [
                         'options'       => ['multiple' => true, 'accept' => 'image/*'],
                         'pluginOptions' => [
-                            'previewFileType'      => 'any',
-                            'maxFileSize'          => 10000,
-                             'initialPreview'       => !$isNewRecord  ? $model->getPreview()['additional'] : [],
-                            'initialPreviewAsData' => true,
-                            'initialPreviewShowDelete' => false,
-                            'overwriteInitial' => false,
-                            'showCaption' => false,
-                            'showRemove' => false,
-                            'showUpload' => false,
+                            'previewFileType'          => 'any',
+                            'maxFileSize'              => 10000,
+                            'initialPreview'           => !$isNewRecord && $model->getPreview()['additional'] ? $model->getPreview()['additional'] : [],
                         ]])
                     ?>
                 </div>

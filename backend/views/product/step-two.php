@@ -1,16 +1,16 @@
 <?php
 
+use common\models\products\ProductColor;
 use kartik\sortable\Sortable;
 use kartik\widgets\Select2;
-use wbraganca\dynamicform\DynamicFormAsset;
-use wbraganca\dynamicform\DynamicFormWidget;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /**
  * @var \common\models\forms\ProductForm $model
- * @var \common\models\products\ProductColor[] $data
+ * @var ProductColor[] $data
+ * @var ProductColor[] $productColors
  * @var array $colors
  * @var boolean $isNewRecord
  */
@@ -22,15 +22,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 
 /** @var \common\models\products\Product $product */
 $product = $model->product;
-$this->registerJsFile('@web/js/yii2-dynamic-form.js', ['depends' => DynamicFormAsset::class]);
 $this->registerJsFile('@web/js/product.js');
-$js = <<<JS
-  $(".dynamicform_wrapper").on('afterInsert',function () {
-        $('.hidden_id').val($('.product_id').data('id'));
-  });
-JS;
-
-$this->registerJs($js);
+$color = new ProductColor();
 ?>
 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
 
@@ -43,78 +36,115 @@ $this->registerJs($js);
             <div class="jarviswidget-editbox">
             </div>
             <div class="widget-body no-padding">
-
-                <h3 class="text-center">Сортировка изображений</h3>
-                <div class="col-md-12 sort_ul">
-                    <?= Sortable::widget([
-                        'type'        => Sortable::TYPE_GRID,
-                        'items'       => $model->buildSortable(),
-                        'handleLabel' => '<i class="glyphicon glyphicon-move"><i>',
-                    ]); ?>
-                </div>
-                <br>
-                <hr>
+                <?php if (!empty($product->productsImages)) { ?>
+                    <h3 class="text-center">Сортировка изображений</h3>
+                    <span class="url_handler hidden"
+                          data-url="<?= Url::toRoute(['ajax/save-product-settings']) ?>"></span>
+                    <div class="col-md-12 sort_ul">
+                        <?= Sortable::widget([
+                            'type'         => Sortable::TYPE_GRID,
+                            'items'        => $model->buildSortable(),
+                            'handleLabel'  => '<i class="glyphicon glyphicon-move"><i>',
+                            'pluginEvents' => [
+                                'sortupdate' => 'function() { sort(); }',
+                            ],
+                        ]); ?>
+                    </div>
+                    <br>
+                    <hr>
+                <?php } ?>
                 <h3 class="text-center">Цвета товара</h3>
-                <?php $form = ActiveForm::begin(['id' => 'properties-form']) ?>
-                <div class="col-md-12 url_handler" data-url="<?= Url::toRoute(['ajax/save-product-settings'])?>">
-                    <?php DynamicFormWidget::begin([
-                        'widgetContainer' => 'dynamicform_wrapper',
-                        'widgetBody'      => '.container-items',
-                        'widgetItem'      => '.item',
-                        'limit'           => 5000,
-                        'min'             => 1,
-                        'insertButton'    => '.add-item',
-                        'deleteButton'    => '.remove-item',
-                        'model'           => $data[0],
-                        'formId'          => 'properties-form',
-                        'formFields'      => [
-                            'id',
-                            'product_id',
-                            'color_id',
-                        ],
-                    ]); ?>
-                    <div class="container-items">
-                        <?php foreach ($data as $i => $item): ?>
-                            <div class="item panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title pull-left">Цвет</h3>
-                                    <div class="pull-right">
-                                        <button type="button" class="add-item btn btn-success btn-xs"><i
-                                                    class="glyphicon glyphicon-plus"></i></button>
-                                        <button type="button" class="remove-item btn btn-danger btn-xs"><i
-                                                    class="glyphicon glyphicon-minus"></i></button>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <span class="hidden product_id" data-id="<?= $product->id ?>"></span>
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <?= $form->field($item, "[{$i}]product_id")->hiddenInput(['value' => $product->id, 'class' => 'hidden_id'])->label(false) ?>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <?= $form->field($item, "[{$i}]color_id")->widget(Select2::class, [
-                                                'data'          => $colors,
-                                                'language'      => 'ru',
-                                                'options'       => ['placeholder' => 'Цвет'],
-                                                'pluginOptions' => [
-                                                    'allowClear' => true,
-                                                ],
-                                            ])->label(false);
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                        <?php DynamicFormWidget::end(); ?>
-                    </div>
-                    <div class="col-md-12">
-                        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
-                        <hr>
-                    </div>
-                    <?php ActiveForm::end() ?>
+                <!-- Button trigger modal -->
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#add_color">
+                        Добавить цвет
+                    </button>
+                    <hr>
                 </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="add_color" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Новый цвет</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <?php $form = ActiveForm::begin(['action' => Url::toRoute(['product/add-color', 'id' => $product->id])]) ?>
+                                <?= $form->field($color, 'product_id')->hiddenInput(['value' => $product->id])->label(false) ?>
+                                <?= $form->field($color, "color_id")->widget(Select2::class, [
+                                    'data'          => $colors,
+                                    'language'      => 'ru',
+                                    'options'       => ['placeholder' => 'Цвет'],
+                                    'pluginOptions' => [
+                                        'allowClear' => true,
+                                    ],
+                                ]);
+                                ?>
+                            </div>
+                            <div class="modal-footer">
+                                <?= Html::submitButton('Добавить', ['class' => 'btn btn-success']) ?>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                            </div>
+                            <?php ActiveForm::end() ?>
+                        </div>
+                    </div>
+                </div>
+                <table class="table">
+                    <tr>
+                        <th>Изображение</th>
+                        <th>Цвет</th>
+                        <th>Действия</th>
+                    </tr>
+                    <?php
+                    /** @var ProductColor $color */
+                    foreach ($productColors as $color) { ?>
+                        <tr>
+                            <td><img src="<?= Yii::getAlias('@colorImagePreviewPath/').$color->color->image ?>" alt=""
+                                     style="width: 50px">
+                            </td>
+                            <td class="color_name"><?= $color->color->name ?>
+                                <div class="hidden_form hidden"></div>
+                            </td>
+                            <td>
+                                <a href="" class="btn btn-warning edit_color" data-id="<?= $color->id ?>"
+                                   data-url="<?= Url::toRoute(['ajax/get-color-form']) ?>"><i
+                                            class="fa fa-lg fa-fw fa-edit"></i></a>
+                                <a href="<?= Url::toRoute(['product/delete-color', 'id' => $color->id]) ?>"
+                                   class="btn btn-danger"
+                                   onclick="confirm('Вы уверены, что хотите открепить цвет от товара?')"><i
+                                            class="fa fa-lg fa-fw fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </table>
             </div>
         </div>
 </article>
+
+<script>
+    function sort() {
+        var sort_order = [];
+
+        $('.sort_ul ul li img').each(function () {
+            sort_order.push($(this).data('id'));
+        });
+
+        $.ajax({
+            url: $('.url_handler').data('url'),
+            type: "POST",
+            data: {
+                sort_order: sort_order,
+                product_id: $('.product_id').data('id')
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+    }
+</script>
