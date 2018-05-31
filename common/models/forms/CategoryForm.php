@@ -9,6 +9,7 @@
 namespace common\models\forms;
 
 use common\models\categories\Category;
+use Yii;
 use yii\base\Model;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
@@ -81,11 +82,12 @@ class CategoryForm extends Model
     public function rules()
     {
         return [
-            [['name', 'alias'], 'required'],
+            [['name', 'alias', 'description_text', 'caption', 'title', 'keywords', 'description'], 'required', 'message' => 'Поле необходимо к заполнению'],
             ['is_root', 'boolean'],
             ['root', 'integer'],
             ['alias', 'unique', 'targetClass' => Category::class, 'filter' => !$this->category->isNewRecord ? ['!=', 'id', $this->category->id] : null],
-            ['file', 'file', 'maxFiles' => 1, 'mimeTypes' => 'image/*'],
+            ['alias', 'match', 'pattern' => '/[A-Za-z]/i', 'message' => 'Разрешен ввод только латиницей'],
+            ['file', 'file', 'maxFiles' => 1, 'mimeTypes' => 'image/*', 'skipOnEmpty' => true],
             [['description_text'], 'string'],
             [['name', 'alias', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
         ];
@@ -182,6 +184,30 @@ class CategoryForm extends Model
         $this->category->setAttributes($this->attributes, false);
 
         return $this->category->save();
+    }
+
+    /**
+     * @return false|int
+     */
+    public function delete()
+    {
+        return $this->category->deleteWithChildren();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPreviewImage()
+    {
+        return Yii::getAlias('@imagePath/') . $this->category->image;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasImage()
+    {
+        return $this->category->image != '';
     }
 
     /**

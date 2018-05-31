@@ -68,7 +68,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return Html::img('@frontend/web/uploads/images/'.$model->image);
                                     },
                                 ],
-                                'description_text',
                                 'created_at:datetime',
                                 [
                                     'class'          => 'yii\grid\ActionColumn',

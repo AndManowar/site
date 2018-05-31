@@ -17,19 +17,6 @@ $(document).on('click', '.make_root', function (e) {
     });
 });
 
-$(document).on('click', '.remove_root', function (e) {
-    $.ajax({
-        type: 'POST',
-        url: '/dashboard/ajax/remove-root',
-        data: {id: $(this).data('id')},
-        success: function () {
-        },
-        error: function () {
-            alert('Error');
-        }
-    });
-});
-
 ;
 (function ($, window, document, undefined) {
     var hasTouch = 'ontouchstart' in window;

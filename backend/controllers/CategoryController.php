@@ -122,13 +122,29 @@ class CategoryController extends baseController
         ]);
     }
 
+    /**
+     * Delete category with children
+     *
+     * @param integer $id
+     * @return \yii\web\Response
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function actionDelete($id)
+    {
+        $model = new CategoryForm($id);
+
+        if ($model->delete()) {
+            Yii::$app->session->setFlash('danger', 'Категория удалена');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * @return string
+     */
     public function actionConfigurateTree()
     {
         return $this->render('tree');
-    }
-
-    public function actionDelete($id)
-    {
-
     }
 }

@@ -52,8 +52,10 @@ $this->registerJsFile('@web/js/category-js.js');
                     <?= $form->field($model, 'file')->widget(FileInput::class, [
                         'options'       => ['multiple' => false, 'accept' => 'image/*'],
                         'pluginOptions' => [
-                            'previewFileType' => 'any',
-                            'maxFileSize'     => 10000,
+                            'previewFileType'      => 'any',
+                            'maxFileSize'          => 10000,
+                            'initialPreview'       => !$isNewRecord && $model->hasImage() ? $model->getPreviewImage() : [],
+                            'initialPreviewAsData' => true,
                         ]])
                     ?>
                 </div>
@@ -102,7 +104,7 @@ $this->registerJsFile('@web/js/category-js.js');
                                         'language'      => 'ru',
                                         'options'       => ['placeholder' => 'Выбрать корневой элемент', 'class' => 'selected_tree'],
                                         'pluginOptions' => [
-                                            'allowClear' => true,
+                                            'allowClear' => false,
                                         ],
                                     ]);
                                 } else {

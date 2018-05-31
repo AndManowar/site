@@ -3,7 +3,7 @@
     font-size: 13px;
     list-style: none;
     margin-bottom: 10px;
-    max-width: 924px;
+    max-width: 100%;
     padding: 0;
     position: relative;
 }
@@ -164,6 +164,31 @@
     background-image: linear-gradient(to bottom, #0088cc, #0044cc);
     background-repeat: repeat-x;
     border-color: #0044cc #0044cc #002a80;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.dd-handle.root{
+    cursor: pointer;
+    left: 0;
+    margin: 0;
+    overflow: hidden;
+    position: absolute;
+    text-indent: 100%;
+    top: 0;
+    white-space: nowrap;
+    line-height: 26px;
+    width: 34px;
+    height: 34px;
+    background-color: red;
+    background-image: -moz-linear-gradient(top,red,red);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(red), to(red));
+    background-image: -webkit-linear-gradient(top,red, red);
+    background-image: -o-linear-gradient(top, red, red);
+    background-image: linear-gradient(to bottom, red, red);
+    background-repeat: repeat-x;
+    border-color: red;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
     filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);

@@ -1,7 +1,6 @@
 <?php
 /** @var string $directoryAsset */
 
-use yii\helpers\Url;
 use yii\widgets\Menu;
 
 ?>
@@ -11,6 +10,7 @@ use yii\widgets\Menu;
         <?= Menu::widget([
             'items' => [
                 ['encode' => false, 'label' => '<i class="fa fa-lg fa-fw fa-indent"></i> <span class="menu-item-parent">Категории</span>', 'url' => ['/category']],
+                ['encode' => false, 'label' => '<i class="fa fa-lg fa-fw fa-gift"></i> <span class="menu-item-parent">Товары</span>', 'url' => ['/product']],
                 ['encode' => false, 'label' => '<i class="fa fa-lg fa-fw fa-gear"></i> <span class="menu-item-parent">Настройки</span>', 'url' => ['/settings']],
                 ['encode' => false, 'label' => '<i class="fa fa-lg fa-fw fa-book"></i> <span class="menu-item-parent">Справочник</span>', 'url' => ['/handbook']],
                 [

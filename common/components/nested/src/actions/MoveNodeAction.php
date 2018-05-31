@@ -4,6 +4,7 @@ namespace common\components\nested\src\actions;
 
 use common\components\nested\src\forms\MoveNodeForm;
 use common\components\nested\src\interfaces\TreeInterface;
+use common\models\categories\Category;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
@@ -37,28 +38,50 @@ class MoveNodeAction extends BaseAction
         }
 
         try {
-            if ($form->prev_id > 0) {
-                $parentModel = $this->findModel($form->prev_id);
 
-                if ($parentModel->isRoot()) {
-                    return $model->appendTo($parentModel)->save();
-                } else {
-                    if ($model->isRoot()) {
-                        echo '<pre>';
-                        print_r($model->attributes);
-                        print_r($form->attributes);
-                        die();
+            if ($model->isRoot()) {
+
+                foreach ($model->getChildren()->all() as $child) {
+                    $child->parent_id = -1;
+                    $child->save(false);
+                }
+
+                if ($form->prev_id > 0) {
+                    $parentModel = $this->findModel($form->prev_id);
+
+                    if ($parentModel->isRoot()) {
+                        return $model->appendTo($parentModel)->save();
                     } else {
                         return $model->insertAfter($parentModel)->save();
-                    }
-                }
-            } elseif ($form->next_id > 0) {
-                $parentModel = $this->findModel($form->next_id);
-                return $model->insertBefore($parentModel)->save();
 
-            } elseif ($form->parent_id > 0) {
-                $parentModel = $this->findModel($form->parent_id);
-                return $model->appendTo($parentModel)->save();
+                    }
+                } elseif ($form->next_id > 0) {
+                    $parentModel = $this->findModel($form->next_id);
+                    return $model->insertBefore($parentModel)->save();
+
+                } elseif ($form->parent_id > 0) {
+                    $parentModel = $this->findModel($form->parent_id);
+                    return $model->appendTo($parentModel)->save();
+                }
+
+            } else {
+                if ($form->prev_id > 0) {
+                    $parentModel = $this->findModel($form->prev_id);
+
+                    if ($parentModel->isRoot()) {
+                        return $model->appendTo($parentModel)->save();
+                    } else {
+                        return $model->insertAfter($parentModel)->save();
+
+                    }
+                } elseif ($form->next_id > 0) {
+                    $parentModel = $this->findModel($form->next_id);
+                    return $model->insertBefore($parentModel)->save();
+
+                } elseif ($form->parent_id > 0) {
+                    $parentModel = $this->findModel($form->parent_id);
+                    return $model->appendTo($parentModel)->save();
+                }
             }
         } catch (Exception $ex) {
         }

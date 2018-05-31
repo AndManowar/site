@@ -153,22 +153,11 @@ class AjaxController extends Controller
      * Mark category as a root
      *
      * @return bool
+     * @throws NotFoundHttpException
      */
     public function actionMakeRoot()
     {
         return Category::findOneStrictException(Yii::$app->request->post('id'))->makeRoot()->save();
-    }
-
-    /**
-     * Mark category as a child
-     *
-     * @return bool
-     */
-    public function actionRemoveRoot()
-    {
-        return Category::findOneStrictException(Yii::$app->request->post('id'))
-            ->appendTo(Category::find()->roots()->one())
-            ->save();
     }
 
     /**

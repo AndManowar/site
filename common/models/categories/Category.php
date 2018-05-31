@@ -26,9 +26,9 @@ use yiidreamteam\upload\ImageUploadBehavior;
  * @property int $created_at
  * @property int $updated_at
  *
- * @property Category $parent
  *
  * @method Category makeRoot();
+ * @method bool deleteWithChildren();
  * @method string getImageFileUrl(string $fileName);
  * @method Category appendTo($model);
  */
@@ -58,7 +58,7 @@ class Category extends AppActiveRecord
             [
                 'class'     => ImageUploadBehavior::class,
                 'attribute' => 'file',
-                'filePath'  => '@frontend/web/uploads/images/[[pk]].[[extension]]',
+                'filePath'  => '@frontend/web/uploads/images/[[filename]].[[extension]]',
                 'fileUrl'   => '[[filename]].[[extension]]',
             ],
         ];
