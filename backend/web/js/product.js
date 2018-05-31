@@ -7,7 +7,11 @@ $(document).ready(function () {
             type: "POST",
             data: {id: button.data('id')},
             success: function (response) {
-                button.closest('tr').find('.hidden_form').removeClass('hidden').html(response);
+                if (button.closest('tr').find('.hidden_form').hasClass('hidden')) {
+                    button.closest('tr').find('.hidden_form').removeClass('hidden').html(response);
+                }else{
+                    button.closest('tr').find('.hidden_form').addClass('hidden').html(response);
+                }
             },
             error: function () {
                 alert('Error');
