@@ -45,14 +45,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'headerOptions'  => ['class' => 'text-center'],
                                     'contentOptions' => ['class' => 'text-center']
                                 ],
-                                'name',
                                 [
                                     'label'  => 'Картинка',
                                     'format' => 'html',
                                     'value'  => function ($model) {
-                                        return Html::img('@frontend/web/uploads/images/'.$model->image);
+                                        return Html::img('@colorImagePreviewPath/'.$model->image, ['width' => 50]);
                                     },
                                 ],
+                                'name',
                                 'created_at:datetime',
                                 [
                                     'class'          => 'yii\grid\ActionColumn',

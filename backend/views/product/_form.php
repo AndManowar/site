@@ -16,8 +16,6 @@ use yii\widgets\ActiveForm;
 
 $this->params['breadcrumbs'][] = ['label' => 'Товары ', 'url' => ['/product']];
 $this->params['breadcrumbs'][] = ['label' => $this->title];
-
-$this->registerJsFile('@web/js/category-js.js');
 ?>
 
 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">

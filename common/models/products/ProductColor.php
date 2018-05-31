@@ -33,7 +33,7 @@ class ProductColor extends AppActiveRecord
     public function rules()
     {
         return [
-            [['product_id', 'color_id'], 'required'],
+            [['product_id'], 'required'],
             [['product_id', 'color_id', 'created_at', 'updated_at'], 'integer'],
             [['color_id'], 'exist', 'skipOnError' => true, 'targetClass' => Color::class, 'targetAttribute' => ['color_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
@@ -48,7 +48,7 @@ class ProductColor extends AppActiveRecord
         return [
             'id'         => 'ID',
             'product_id' => 'Product ID',
-            'color_id'   => 'Color ID',
+            'color_id'   => 'Цвет',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

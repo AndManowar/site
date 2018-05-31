@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         'pluginOptions' => [
                             'previewFileType'      => 'any',
                             'maxFileSize'          => 10000,
-                            'initialPreview'       => !$isNewRecord ? $model->getPreviewImage() : [],
+                            'initialPreview'       => !$isNewRecord && $model->hasImage() ? $model->getPreviewImage() : [],
                             'initialPreviewAsData' => true,
                         ]])
                     ?>

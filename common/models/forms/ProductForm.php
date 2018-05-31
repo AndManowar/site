@@ -9,6 +9,7 @@
 namespace common\models\forms;
 
 use common\models\products\Product;
+use common\models\products\ProductColor;
 use common\models\products\ProductImage;
 use Yii;
 use yii\base\Model;
@@ -17,6 +18,10 @@ use yii\web\UploadedFile;
 /**
  * Class ProductForm
  * @package common\models\forms
+ *
+ * @property mixed $colors
+ * @property array $sortOrder
+ * @property array $preview
  */
 class ProductForm extends Model
 {
@@ -185,6 +190,7 @@ class ProductForm extends Model
         }
 
         $transaction->commit();
+
         return true;
     }
 
@@ -200,10 +206,10 @@ class ProductForm extends Model
     {
         $images = [];
 
-        $images['title'] = Yii::getAlias('@productImagePreviewPath/') . $this->product->title_image;
+        $images['title'] = Yii::getAlias('@productImagePreviewPath/').$this->product->title_image;
 
         foreach ($this->product->productsImages as $productImage) {
-            $images['additional'][] = Yii::getAlias('@productImagePreviewPath/') . $productImage->image;
+            $images['additional'][] = Yii::getAlias('@productImagePreviewPath/').$productImage->image;
         }
 
         return $images;
@@ -215,12 +221,55 @@ class ProductForm extends Model
     public function buildSortable()
     {
         $result = [];
-
-        foreach ($this->product->productsImages as $productImage){
-            $result[]['content'] = "<img src='{$productImage->getPreview()}'>";
+        foreach ($this->product->getSortedImages() as $productImage) {
+            $result[]['content'] = "<img src='{$productImage->getPreview()}' class='thumbnail image_sort' data-id='{$productImage->id}' style='width: 200px;'><i class='fa fa-list'></i>";
         }
 
         return $result;
+    }
+
+    /**
+     * @param $data
+     * @return boolean
+     */
+    public function setColors($data)
+    {
+        parse_str($data, $data);
+
+        if (!isset($data['ProductColor'])) {
+            return false;
+        }
+
+        foreach ($data['ProductColor'] as $colorItem) {
+            $color = new ProductColor($colorItem);
+
+            if (ProductColor::find()->where(['color_id' => $color->color_id])->andWhere(['product_id' => $color->product_id])->exists()) {
+                continue;
+            }
+
+            if (!$color->save()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $data
+     * @return boolean
+     */
+    public function setSortOrder($data)
+    {
+        foreach ($data as $id => $order) {
+            $image = ProductImage::findOneStrictException($order);
+            $image->sort = $id + 1;
+            if (!$image->save()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -241,11 +290,12 @@ class ProductForm extends Model
     {
         if ($this->files) {
 
-            foreach ($this->files as $file) {
+            foreach ($this->files as $id => $file) {
 
                 $image = new ProductImage([
                     'product_id' => $this->product->id,
                     'file'       => $file,
+                    'sort'       => $id,
                 ]);
 
                 $image->image = $image->getImageFileUrl('file');

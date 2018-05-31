@@ -124,6 +124,14 @@ class ColorForm extends Model
     }
 
     /**
+     * @return bool
+     */
+    public function hasImage()
+    {
+        return $this->color->image !== null;
+    }
+
+    /**
      * Set uploaded image name to model
      */
     private function setUploadedImage()

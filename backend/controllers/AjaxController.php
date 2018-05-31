@@ -11,7 +11,10 @@ namespace backend\controllers;
 use common\components\tasks\models\Task;
 use common\components\tasks\services\TaskService;
 use common\models\categories\Category;
+use common\models\forms\ProductForm;
 use Yii;
+use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -168,5 +171,22 @@ class AjaxController extends Controller
     public function actionRemoveDoneTasks()
     {
         return (new TaskService())->removeDoneTasks();
+    }
+
+    /**
+     * @return array
+     * @throws BadRequestHttpException
+     */
+    public function actionSaveProductSettings()
+    {
+        $productForm = new ProductForm(Yii::$app->request->post('product_id'));
+
+        if ($productForm->setColors(Yii::$app->request->post('form_data'))
+            && $productForm->setSortOrder(Yii::$app->request->post('sort_order'))
+        ) {
+            return ['url' => Url::toRoute(['product/index'])];
+        }
+
+        throw new BadRequestHttpException();
     }
 }

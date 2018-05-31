@@ -47,6 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'headerOptions'  => ['class' => 'text-center'],
                                     'contentOptions' => ['class' => 'text-center']
                                 ],
+                                [
+                                    'label'  => 'Картинка',
+                                    'format' => 'html',
+                                    'value'  => function ($model) {
+                                        return Html::img('@categoryImagePreviewPath/'.$model->image, ['width' => 100]);
+                                    },
+                                ],
                                 'name',
                                 'caption',
                                 [
@@ -60,13 +67,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                         return '<span class="label label-danger">Child for "' . Category::find()->roots()->andWhere(['id' => $model->parent_id])->one()->name . '"</span>';
                                     }
-                                ],
-                                [
-                                    'label'  => 'Картинка',
-                                    'format' => 'html',
-                                    'value'  => function ($model) {
-                                        return Html::img('@frontend/web/uploads/images/'.$model->image);
-                                    },
                                 ],
                                 'created_at:datetime',
                                 [

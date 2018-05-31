@@ -4,7 +4,9 @@ namespace common\models\products;
 
 use common\models\AppActiveRecord;
 use common\models\categories\Category;
+use common\models\products\ProductImage;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 use yiidreamteam\upload\ImageUploadBehavior;
 
@@ -31,6 +33,7 @@ use yiidreamteam\upload\ImageUploadBehavior;
  *
  * @property ProductColor[] $productsColors
  * @property ProductImage[] $productsImages
+ * @property ProductImage[] $sortedImages
  * @property Category $category
  *
  * @method string getImageFileUrl(string $fileName);
@@ -113,5 +116,16 @@ class Product extends AppActiveRecord
     public function getCategory()
     {
         return $this->hasOne(Category::class, ['id' => 'category_id']);
+    }
+
+    /**
+     * @return ProductImage[]
+     */
+    public function getSortedImages()
+    {
+        $images = $this->productsImages;
+        ArrayHelper::multisort($images, 'sort');
+
+        return $images;
     }
 }

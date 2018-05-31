@@ -11,6 +11,9 @@ namespace backend\controllers;
 use common\components\rbac\baseController;
 use common\models\categories\Category;
 use common\models\forms\ProductForm;
+use common\models\products\Color;
+use common\models\products\Product;
+use common\models\products\ProductColor;
 use common\models\products\ProductSearch;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -51,13 +54,14 @@ class ProductController extends baseController
 
             if ($model->create()) {
                 Yii::$app->session->setFlash('success', 'Товар создан');
-                return $this->redirect(['index']);
+
+                return $this->redirect(['product/step-two']);
             }
         }
 
         return $this->render('create', [
             'model'      => $model,
-            'categories' => ArrayHelper::map(Category::find()->all(), 'id', 'name')
+            'categories' => ArrayHelper::map(Category::find()->all(), 'id', 'name'),
         ]);
     }
 
@@ -69,6 +73,8 @@ class ProductController extends baseController
     public function actionStepTwo($id)
     {
         $model = new ProductForm($id);
+        /** @var Product $product */
+        $product = $model->product;
 
         if ($model->load(Yii::$app->request->post())) {
 
@@ -76,7 +82,9 @@ class ProductController extends baseController
         }
 
         return $this->render('step-two', [
-            'model' => $model
+            'model'  => $model,
+            'data'   => $product->productsColors ? $product->productsColors : [new ProductColor()],
+            'colors' => ArrayHelper::map(Color::find()->all(), 'id', 'name'),
         ]);
     }
 
@@ -93,13 +101,14 @@ class ProductController extends baseController
 
             if ($model->update()) {
                 Yii::$app->session->setFlash('success', 'Товар обновлен');
+
                 return $this->redirect(['index']);
             }
         }
 
         return $this->render('update', [
             'model'      => $model,
-            'categories' => ArrayHelper::map(Category::find()->all(), 'id', 'name')
+            'categories' => ArrayHelper::map(Category::find()->all(), 'id', 'name'),
         ]);
     }
 }
