@@ -25,6 +25,42 @@ $product = $model->product;
 $this->registerJsFile('@web/js/product.js');
 $color = new ProductColor();
 ?>
+
+
+<!-- Modal -->
+<div class="modal fade" id="add_color" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Новый цвет</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?php $form = ActiveForm::begin(['action' => Url::toRoute(['product/add-color', 'id' => $product->id])]) ?>
+                <?= $form->field($color, 'product_id')->hiddenInput(['value' => $product->id])->label(false) ?>
+                <?= $form->field($color, "color_id")->widget(Select2::class, [
+                    'data'          => $colors,
+                    'language'      => 'ru',
+                    'options'       => ['placeholder' => 'Цвет'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ]);
+                ?>
+            </div>
+            <div class="modal-footer">
+                <?= Html::submitButton('Добавить', ['class' => 'btn btn-success']) ?>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+            <?php ActiveForm::end() ?>
+        </div>
+    </div>
+</div>
+
 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
 
     <div class="jarviswidget jarviswidget-sortable" id="wid-id-0" data-widget-colorbutton="false"
@@ -61,40 +97,6 @@ $color = new ProductColor();
                     </button>
                     <hr>
                 </div>
-
-                <!-- Modal -->
-                <div class="modal fade" id="add_color" tabindex="-1" role="dialog"
-                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Новый цвет</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <?php $form = ActiveForm::begin(['action' => Url::toRoute(['product/add-color', 'id' => $product->id])]) ?>
-                                <?= $form->field($color, 'product_id')->hiddenInput(['value' => $product->id])->label(false) ?>
-                                <?= $form->field($color, "color_id")->widget(Select2::class, [
-                                    'data'          => $colors,
-                                    'language'      => 'ru',
-                                    'options'       => ['placeholder' => 'Цвет'],
-                                    'pluginOptions' => [
-                                        'allowClear' => true,
-                                    ],
-                                ]);
-                                ?>
-                            </div>
-                            <div class="modal-footer">
-                                <?= Html::submitButton('Добавить', ['class' => 'btn btn-success']) ?>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-                            </div>
-                            <?php ActiveForm::end() ?>
-                        </div>
-                    </div>
-                </div>
                 <?php if (!empty($productColors)) { ?>
                     <table class="table">
                         <tr>
@@ -119,7 +121,7 @@ $color = new ProductColor();
                                                 class="fa fa-lg fa-fw fa-edit"></i></a>
                                     <a href="<?= Url::toRoute(['product/delete-color', 'id' => $color->id]) ?>"
                                        class="btn btn-danger"
-                                       onclick="confirm('Вы уверены, что хотите открепить цвет от товара?')"><i
+                                       onclick="return confirm('Вы уверены, что хотите открепить цвет от товара?')"><i
                                                 class="fa fa-lg fa-fw fa-trash"></i></a>
                                 </td>
                             </tr>

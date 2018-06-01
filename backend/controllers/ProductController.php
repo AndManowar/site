@@ -42,6 +42,7 @@ class ProductController extends baseController
     /**
      * @return string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException
+     * @throws \yii\db\Exception
      */
     public function actionCreate()
     {
@@ -88,6 +89,7 @@ class ProductController extends baseController
      * @param $id
      * @return string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException
+     * @throws \yii\db\Exception
      */
     public function actionUpdate($id)
     {
@@ -109,6 +111,29 @@ class ProductController extends baseController
             'model'      => $model,
             'categories' => ArrayHelper::map(Category::find()->all(), 'id', 'name'),
         ]);
+    }
+
+    /**
+     * Delete product action
+     *
+     * @param integer $id
+     * @return \yii\web\Response
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function actionDelete($id)
+    {
+        $productForm = new ProductForm($id);
+
+        if($productForm->delete()){
+            Yii::$app->session->setFlash('warning', 'Товар удален');
+        }else{
+            Yii::$app->session->setFlash('danger', 'Невозможно удалить товар');
+        }
+
+        return $this->redirect(['index']);
     }
 
     /**
@@ -144,6 +169,7 @@ class ProductController extends baseController
      *
      * @param int $id
      * @return \yii\web\Response
+     * @throws \yii\web\NotFoundHttpException
      */
     public function actionEditColor($id)
     {
@@ -166,6 +192,10 @@ class ProductController extends baseController
      *
      * @param int $id
      * @return \yii\web\Response
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     * @throws \yii\web\NotFoundHttpException
      */
     public function actionDeleteColor($id)
     {

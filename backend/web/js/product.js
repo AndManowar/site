@@ -14,7 +14,6 @@ $(document).ready(function () {
                 }
             },
             error: function () {
-                alert('Error');
             }
         });
     });
@@ -26,11 +25,10 @@ $(document).ready(function () {
             url: '/dashboard/ajax/delete-image',
             type: "POST",
             data: {id: button.data('id')},
-            success: function (response) {
+            success: function () {
                 button.closest('li').remove();
             },
             error: function () {
-                alert('Error');
             }
         });
     });

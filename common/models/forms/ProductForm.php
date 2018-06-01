@@ -221,6 +221,21 @@ class ProductForm extends Model
     }
 
     /**
+     * Delete product
+     *
+     * TODO удаление товара в заказе - запретить
+     *
+     * @return false|int
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function delete()
+    {
+        return $this->product->delete();
+    }
+
+    /**
      * @return array
      */
     public function getPreview()

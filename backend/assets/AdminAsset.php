@@ -44,7 +44,6 @@ class AdminAsset extends AssetBundle
      */
     public $js = [
         'js/app.config.js',
-        'js/bootstrap/bootstrap.min.js',
         'js/notification/SmartNotification.min.js',
         'js/smartwidgets/jarvis.widget.min.js',
         'js/demo.min.js',
@@ -58,6 +57,6 @@ class AdminAsset extends AssetBundle
      */
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
     ];
 }

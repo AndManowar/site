@@ -133,3 +133,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
         </div>
     </div>
 </article>
+
+<style>
+    .file-thumbnail-footer{
+        display: none;
+    }
+</style>
