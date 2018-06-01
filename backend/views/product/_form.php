@@ -119,6 +119,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             'previewFileType'          => 'any',
                             'maxFileSize'              => 10000,
                             'initialPreview'           => !$isNewRecord && $model->getPreview()['additional'] ? $model->getPreview()['additional'] : [],
+                            'initialPreviewAsData'     => true,
                         ]])
                     ?>
                 </div>

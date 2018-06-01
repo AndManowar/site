@@ -75,7 +75,7 @@ class ColorController extends baseController
     /**
      * Delete color action
      *
-     * @param $id
+     * @param integer $id
      * @return \yii\web\Response
      * @throws \Exception
      * @throws \Throwable

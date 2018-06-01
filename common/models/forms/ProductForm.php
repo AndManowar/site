@@ -9,7 +9,6 @@
 namespace common\models\forms;
 
 use common\models\products\Product;
-use common\models\products\ProductColor;
 use common\models\products\ProductImage;
 use Yii;
 use yii\base\Model;
@@ -195,6 +194,7 @@ class ProductForm extends Model
 
     /**
      * @return bool
+     * @throws \yii\db\Exception
      */
     public function update()
     {
@@ -227,10 +227,10 @@ class ProductForm extends Model
     {
         $images = [];
 
-        $images['title'] = Yii::getAlias('@productImagePreviewPath/').$this->product->title_image;
+        $images['title'] = Yii::getAlias('@productImagePreviewPath/') . $this->product->title_image;
 
         foreach ($this->product->productsImages as $productImage) {
-            $images['additional'][] = Yii::getAlias('@productImagePreviewPath/').$productImage->image;
+            $images['additional'][] = Yii::getAlias('@productImagePreviewPath/') . $productImage->image;
         }
 
         return $images;
@@ -251,35 +251,9 @@ class ProductForm extends Model
     }
 
     /**
-     * @param $data
-     * @return boolean
-     */
-    public function setColors($data)
-    {
-        parse_str($data, $data);
-
-        if (!isset($data['ProductColor'])) {
-            return false;
-        }
-
-        foreach ($data['ProductColor'] as $colorItem) {
-            $color = new ProductColor($colorItem);
-
-            if (ProductColor::find()->where(['color_id' => $color->color_id])->andWhere(['product_id' => $color->product_id])->exists()) {
-                continue;
-            }
-
-            if (!$color->save()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * @param array $data
      * @return boolean
+     * @throws \yii\web\NotFoundHttpException
      */
     public function setSortOrder($data)
     {

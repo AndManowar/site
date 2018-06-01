@@ -179,6 +179,7 @@ class AjaxController extends Controller
     /**
      * @return boolean
      * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
      */
     public function actionSaveProductSettings()
     {
@@ -195,6 +196,7 @@ class AjaxController extends Controller
 
     /**
      * @return string
+     * @throws NotFoundHttpException
      */
     public function actionGetColorForm()
     {
@@ -206,6 +208,10 @@ class AjaxController extends Controller
 
     /**
      * @return bool
+     * @throws NotFoundHttpException
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDeleteImage()
     {

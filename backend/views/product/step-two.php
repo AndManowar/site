@@ -95,34 +95,37 @@ $color = new ProductColor();
                         </div>
                     </div>
                 </div>
-                <table class="table">
-                    <tr>
-                        <th>Изображение</th>
-                        <th>Цвет</th>
-                        <th>Действия</th>
-                    </tr>
-                    <?php
-                    /** @var ProductColor $color */
-                    foreach ($productColors as $color) { ?>
+                <?php if (!empty($productColors)) { ?>
+                    <table class="table">
                         <tr>
-                            <td><img src="<?= Yii::getAlias('@colorImagePreviewPath/').$color->color->image ?>" alt=""
-                                     style="width: 50px">
-                            </td>
-                            <td class="color_name"><?= $color->color->name ?>
-                                <div class="hidden_form hidden"></div>
-                            </td>
-                            <td>
-                                <a href="" class="btn btn-warning edit_color" data-id="<?= $color->id ?>"
-                                   data-url="<?= Url::toRoute(['ajax/get-color-form']) ?>"><i
-                                            class="fa fa-lg fa-fw fa-edit"></i></a>
-                                <a href="<?= Url::toRoute(['product/delete-color', 'id' => $color->id]) ?>"
-                                   class="btn btn-danger"
-                                   onclick="confirm('Вы уверены, что хотите открепить цвет от товара?')"><i
-                                            class="fa fa-lg fa-fw fa-trash"></i></a>
-                            </td>
+                            <th>Изображение</th>
+                            <th>Цвет</th>
+                            <th>Действия</th>
                         </tr>
-                    <?php } ?>
-                </table>
+                        <?php
+                        /** @var ProductColor $color */
+                        foreach ($productColors as $color) { ?>
+                            <tr>
+                                <td><img src="<?= Yii::getAlias('@colorImagePreviewPath/') . $color->color->image ?>"
+                                         alt=""
+                                         style="width: 50px">
+                                </td>
+                                <td class="color_name"><?= $color->color->name ?>
+                                    <div class="hidden_form hidden"></div>
+                                </td>
+                                <td>
+                                    <a href="" class="btn btn-warning edit_color" data-id="<?= $color->id ?>"
+                                       data-url="<?= Url::toRoute(['ajax/get-color-form']) ?>"><i
+                                                class="fa fa-lg fa-fw fa-edit"></i></a>
+                                    <a href="<?= Url::toRoute(['product/delete-color', 'id' => $color->id]) ?>"
+                                       class="btn btn-danger"
+                                       onclick="confirm('Вы уверены, что хотите открепить цвет от товара?')"><i
+                                                class="fa fa-lg fa-fw fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </table>
+                <?php } ?>
             </div>
         </div>
 </article>

@@ -23,6 +23,9 @@ class CategoryController extends baseController
 {
     use AjaxValidationTrait;
 
+    /**
+     * @var string
+     */
     private $modelClass = Category::class;
 
     /**
@@ -42,11 +45,7 @@ class CategoryController extends baseController
             'updateNode' => [
                 'class'      => 'common\components\nested\src\actions\UpdateNodeAction',
                 'modelClass' => $this->modelClass,
-            ],
-            'createNode' => [
-                'class'      => 'common\components\nested\src\actions\CreateNodeAction',
-                'modelClass' => $this->modelClass,
-            ],
+            ]
         ];
     }
 
