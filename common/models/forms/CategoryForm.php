@@ -90,6 +90,9 @@ class CategoryForm extends Model
             ['file', 'file', 'maxFiles' => 1, 'mimeTypes' => 'image/*', 'skipOnEmpty' => true],
             [['description_text'], 'string'],
             [['name', 'alias', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
+            ['file', 'required', 'when' => function () {
+                return !$this->category->image;
+            }]
         ];
     }
 

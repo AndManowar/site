@@ -34,9 +34,10 @@ $this->registerJsFile('@web/js/category-js.js');
             <div class="widget-body no-padding">
                 <hr>
                 <?php $form = ActiveForm::begin([
-                    'id'                   => 'category-form',
-                    'enableAjaxValidation' => true,
-                    'options'              => [
+                    'id'                     => 'category-form',
+                    'enableAjaxValidation'   => true,
+                    'enableClientValidation' => false,
+                    'options'                => [
                         'enctype' => 'multipart/form-data',
                     ]]) ?>
                 <div class="col-md-12">

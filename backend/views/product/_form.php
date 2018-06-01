@@ -37,8 +37,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             <div class="widget-body no-padding">
                 <hr>
                 <?php $form = ActiveForm::begin([
-                    'id'      => 'category-form',
-                    'options' => [
+                    'id'                     => 'category-form',
+                    'enableClientValidation' => false,
+                    'enableAjaxValidation'   => true,
+                    'options'                => [
                         'enctype' => 'multipart/form-data',
                     ]]) ?>
                 <h2 class="text-center">Описание товара</h2>
@@ -78,10 +80,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     <?= $form->field($model, 'title_file')->widget(FileInput::class, [
                         'options'       => ['multiple' => false, 'accept' => 'image/*'],
                         'pluginOptions' => [
-                            'previewFileType'          => 'any',
-                            'maxFileSize'              => 10000,
-                            'initialPreview'           => !$isNewRecord ? $model->getPreview()['title'] : [],
-                            'initialPreviewAsData'     => true,
+                            'previewFileType'      => 'any',
+                            'maxFileSize'          => 10000,
+                            'initialPreview'       => !$isNewRecord ? $model->getPreview()['title'] : [],
+                            'initialPreviewAsData' => true,
                         ]])
                     ?>
                 </div>
@@ -116,10 +118,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                     <?= $form->field($model, 'files[]')->widget(FileInput::class, [
                         'options'       => ['multiple' => true, 'accept' => 'image/*'],
                         'pluginOptions' => [
-                            'previewFileType'          => 'any',
-                            'maxFileSize'              => 10000,
-                            'initialPreview'           => !$isNewRecord && $model->getPreview()['additional'] ? $model->getPreview()['additional'] : [],
-                            'initialPreviewAsData'     => true,
+                            'previewFileType'      => 'any',
+                            'maxFileSize'          => 10000,
+                            'initialPreview'       => !$isNewRecord && $model->getPreview()['additional'] ? $model->getPreview()['additional'] : [],
+                            'initialPreviewAsData' => true,
                         ]])
                     ?>
                 </div>
@@ -135,7 +137,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 </article>
 
 <style>
-    .file-thumbnail-footer{
+    .file-thumbnail-footer {
         display: none;
     }
 </style>

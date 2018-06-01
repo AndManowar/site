@@ -14,6 +14,7 @@ use common\models\categories\Category;
 use common\models\categories\CategorySearch;
 use common\models\forms\CategoryForm;
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * Class CategoryController
@@ -76,6 +77,8 @@ class CategoryController extends baseController
 
         if ($model->load(Yii::$app->request->post())) {
 
+            $model->file = UploadedFile::getInstance($model,'file');
+
             if (($errors = $this->modelAjaxValidation($model)) !== null) {
                 return $errors;
             }
@@ -103,6 +106,8 @@ class CategoryController extends baseController
         $model = new CategoryForm($id);
 
         if ($model->load(Yii::$app->request->post())) {
+
+            $model->file = UploadedFile::getInstance($model,'file');
 
             if (($errors = $this->modelAjaxValidation($model)) !== null) {
                 return $errors;

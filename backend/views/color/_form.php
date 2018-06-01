@@ -26,7 +26,11 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             </div>
             <div class="widget-body no-padding">
                 <hr>
-                <?php $form = ActiveForm::begin(['id' => 'settings-form']) ?>
+                <?php $form = ActiveForm::begin([
+                    'id'                     => 'settings-form',
+                    'enableAjaxValidation'   => true,
+                    'enableClientValidation' => false,
+                ]) ?>
                 <div class="col-md-12">
                     <?= $form->field($model, 'name', ['options' => ['class' => 'form-group label-floating']])->textInput() ?>
                 </div>

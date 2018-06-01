@@ -8,10 +8,12 @@
 
 namespace backend\controllers;
 
+use common\components\AjaxValidationTrait;
 use common\components\rbac\baseController;
 use common\models\forms\ColorForm;
 use common\models\products\ColorSearch;
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * Class ColorController
@@ -19,6 +21,8 @@ use Yii;
  */
 class ColorController extends baseController
 {
+    use AjaxValidationTrait;
+
     /**
      * @return string
      */
@@ -36,17 +40,27 @@ class ColorController extends baseController
     /**
      * Create color action
      *
-     * @return string|\yii\web\Response
+     * @return array|string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException
      */
     public function actionCreate()
     {
         $model = new ColorForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->create()) {
-            Yii::$app->session->setFlash('success', 'Цвет добавлен');
+        if ($model->load(Yii::$app->request->post())) {
 
-            return $this->redirect(['index']);
+            $model->file = UploadedFile::getInstance($model, 'file');
+
+            if (($errors = $this->modelAjaxValidation($model)) !== null) {
+                return $errors;
+            }
+
+            if ($model->create()) {
+
+                Yii::$app->session->setFlash('success', 'Цвет добавлен');
+
+                return $this->redirect(['index']);
+            }
         }
 
         return $this->render('create', ['model' => $model]);
@@ -56,17 +70,26 @@ class ColorController extends baseController
      * Update color action
      *
      * @param $id
-     * @return string|\yii\web\Response
+     * @return array|string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException
      */
     public function actionUpdate($id)
     {
         $model = new ColorForm($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->update()) {
-            Yii::$app->session->setFlash('success', 'Цвет обновлен');
+        if ($model->load(Yii::$app->request->post())) {
 
-            return $this->redirect(['index']);
+            $model->file = UploadedFile::getInstance($model, 'file');
+
+            if (($errors = $this->modelAjaxValidation($model)) !== null) {
+                return $errors;
+            }
+
+            if($model->update()) {
+                Yii::$app->session->setFlash('success', 'Цвет обновлен');
+
+                return $this->redirect(['index']);
+            }
         }
 
         return $this->render('update', ['model' => $model]);

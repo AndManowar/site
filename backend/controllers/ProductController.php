@@ -8,6 +8,7 @@
 
 namespace backend\controllers;
 
+use common\components\AjaxValidationTrait;
 use common\components\rbac\baseController;
 use common\models\categories\Category;
 use common\models\forms\ProductForm;
@@ -25,6 +26,8 @@ use yii\web\UploadedFile;
  */
 class ProductController extends baseController
 {
+    use AjaxValidationTrait;
+
     /**
      * @return string
      */
@@ -40,7 +43,7 @@ class ProductController extends baseController
     }
 
     /**
-     * @return string|\yii\web\Response
+     * @return array|string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException
      * @throws \yii\db\Exception
      */
@@ -52,6 +55,10 @@ class ProductController extends baseController
 
             $model->title_file = UploadedFile::getInstance($model, 'title_file');
             $model->files = UploadedFile::getInstances($model, 'files');
+
+            if (($errors = $this->modelAjaxValidation($model)) !== null) {
+                return $errors;
+            }
 
             if ($model->create()) {
                 Yii::$app->session->setFlash('success', 'Товар создан');
@@ -87,7 +94,7 @@ class ProductController extends baseController
 
     /**
      * @param $id
-     * @return string|\yii\web\Response
+     * @return array|string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException
      * @throws \yii\db\Exception
      */
@@ -99,6 +106,10 @@ class ProductController extends baseController
 
             $model->title_file = UploadedFile::getInstance($model, 'title_file');
             $model->files = UploadedFile::getInstances($model, 'files');
+
+            if (($errors = $this->modelAjaxValidation($model)) !== null) {
+                return $errors;
+            }
 
             if ($model->update()) {
                 Yii::$app->session->setFlash('success', 'Товар обновлен');
@@ -127,9 +138,9 @@ class ProductController extends baseController
     {
         $productForm = new ProductForm($id);
 
-        if($productForm->delete()){
+        if ($productForm->delete()) {
             Yii::$app->session->setFlash('warning', 'Товар удален');
-        }else{
+        } else {
             Yii::$app->session->setFlash('danger', 'Невозможно удалить товар');
         }
 
@@ -173,9 +184,17 @@ class ProductController extends baseController
      */
     public function actionEditColor($id)
     {
+
         $color = ProductColor::findOneStrictException($id);
 
         if ($color->load(Yii::$app->request->post())) {
+
+            if (ProductColor::find()->where(['product_id' => $color->product_id])->andWhere(['color_id' => $color->color_id])->exists()) {
+                Yii::$app->session->setFlash('danger', 'Этот цвет уже добавлен');
+
+                return $this->redirect(['step-two', 'id' => $color->product_id]);
+            }
+
 
             if ($color->save()) {
                 Yii::$app->session->setFlash('success', 'Цвет изменен');
@@ -184,7 +203,7 @@ class ProductController extends baseController
             }
         }
 
-        return $this->redirect(['step-two', 'id' => $id]);
+        return $this->redirect(['step-two', 'id' => $color->product_id]);
     }
 
     /**

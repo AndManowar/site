@@ -1,6 +1,5 @@
 <?php
 
-use kartik\widgets\Select2;
 use yii\widgets\ActiveForm;
 use common\models\products\ProductColor;
 

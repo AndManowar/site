@@ -116,6 +116,9 @@ class ProductForm extends Model
             ['is_shown', 'boolean'],
             ['category_id', 'integer'],
             [['name', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
+            ['title_file', 'required', 'when' => function () {
+                return !$this->product->title_image;
+            }]
         ];
     }
 
