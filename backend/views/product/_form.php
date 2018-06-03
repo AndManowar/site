@@ -37,9 +37,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             <div class="widget-body no-padding">
                 <hr>
                 <?php $form = ActiveForm::begin([
-                    'id'                     => 'category-form',
-                    'enableClientValidation' => false,
-                    'enableAjaxValidation'   => true,
+                    'id'                     => 'product-form',
+                    'enableClientValidation' => $isNewRecord ? true : false,
+                    'enableAjaxValidation'   => $isNewRecord ? false : true,
                     'options'                => [
                         'enctype' => 'multipart/form-data',
                     ]]) ?>

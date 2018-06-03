@@ -35,8 +35,8 @@ $this->registerJsFile('@web/js/category-js.js');
                 <hr>
                 <?php $form = ActiveForm::begin([
                     'id'                     => 'category-form',
-                    'enableAjaxValidation'   => true,
-                    'enableClientValidation' => false,
+                    'enableAjaxValidation'   => $isNewRecord ? false : true,
+                    'enableClientValidation' => $isNewRecord ? true : false,
                     'options'                => [
                         'enctype' => 'multipart/form-data',
                     ]]) ?>
@@ -133,3 +133,9 @@ $this->registerJsFile('@web/js/category-js.js');
         </div>
     </div>
 </article>
+
+<style>
+    .file-thumbnail-footer {
+        display: none;
+    }
+</style>

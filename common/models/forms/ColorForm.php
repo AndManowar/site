@@ -16,6 +16,9 @@ use yii\web\UploadedFile;
 /**
  * Class ColorForm
  * @package common\models\forms
+ *
+ * @property string $previewImage
+ * @property Color $color
  */
 class ColorForm extends Model
 {
@@ -25,7 +28,7 @@ class ColorForm extends Model
     public $name;
 
     /**
-     * @var string
+     * @var UploadedFile
      */
     public $file;
 
@@ -41,10 +44,10 @@ class ColorForm extends Model
     {
         return [
             [['name'], 'required', 'message' => 'Поле обязательно к заполнению'],
+            ['file', 'file', 'mimeTypes' => 'image/*'],
             ['file', 'required', 'when' => function () {
                 return !$this->color->image;
             }],
-            ['file', 'file', 'mimeTypes' => 'image/*'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -87,8 +90,8 @@ class ColorForm extends Model
             return false;
         }
 
-        $this->setUploadedImage();
         $this->color->setAttributes($this->getAttributes(), false);
+        $this->setUploadedImage();
 
         return $this->color->save();
     }
@@ -101,8 +104,8 @@ class ColorForm extends Model
         if (!$this->validate()) {
             return false;
         }
-        $this->setUploadedImage();
         $this->color->setAttributes($this->getAttributes(), false);
+        $this->setUploadedImage();
 
         return $this->color->save();
     }
@@ -123,7 +126,7 @@ class ColorForm extends Model
      */
     public function getPreviewImage()
     {
-        return Yii::getAlias('@colorImagePreviewPath/') . $this->color->image;
+        return Yii::getAlias('@colorImagePreviewPath/').$this->color->image;
     }
 
     /**
@@ -139,9 +142,8 @@ class ColorForm extends Model
      */
     private function setUploadedImage()
     {
-
-        $this->color->file = UploadedFile::getInstance($this, 'file');
-        if ($this->color->file) {
+        if ($this->file) {
+            $this->color->file = $this->file;
             $this->color->image = $this->color->getImageFileUrl('file');
         }
     }

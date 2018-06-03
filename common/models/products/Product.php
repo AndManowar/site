@@ -2,9 +2,11 @@
 
 namespace common\models\products;
 
+use common\components\behaviors\ImageManagerBehavior;
 use common\models\AppActiveRecord;
 use common\models\categories\Category;
 use common\models\products\ProductImage;
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
@@ -90,6 +92,12 @@ class Product extends AppActiveRecord
                 'attribute' => 'file',
                 'filePath'  => '@productImagePath/[[filename]].[[extension]]',
                 'fileUrl'   => '[[filename]].[[extension]]',
+            ],
+            [
+                'class'         => ImageManagerBehavior::class,
+                'file'          => 'file',
+                'image'         => 'title_image',
+                'directoryPath' => Yii::getAlias('@productImagePath'),
             ],
         ];
     }

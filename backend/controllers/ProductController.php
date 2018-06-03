@@ -56,14 +56,10 @@ class ProductController extends baseController
             $model->title_file = UploadedFile::getInstance($model, 'title_file');
             $model->files = UploadedFile::getInstances($model, 'files');
 
-            if (($errors = $this->modelAjaxValidation($model)) !== null) {
-                return $errors;
-            }
-
             if ($model->create()) {
                 Yii::$app->session->setFlash('success', 'Товар создан');
 
-                return $this->redirect(['product/step-two']);
+                return $this->redirect(['product/step-two', 'id' => $model->product->id]);
             }
         }
 
@@ -130,7 +126,6 @@ class ProductController extends baseController
      * @param integer $id
      * @return \yii\web\Response
      * @throws \Exception
-     * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      * @throws \yii\web\NotFoundHttpException
      */
@@ -212,7 +207,6 @@ class ProductController extends baseController
      * @param int $id
      * @return \yii\web\Response
      * @throws \Exception
-     * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      * @throws \yii\web\NotFoundHttpException
      */

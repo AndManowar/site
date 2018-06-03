@@ -79,10 +79,6 @@ class CategoryController extends baseController
 
             $model->file = UploadedFile::getInstance($model,'file');
 
-            if (($errors = $this->modelAjaxValidation($model)) !== null) {
-                return $errors;
-            }
-
             if ($model->create()) {
                 Yii::$app->session->setFlash('success', 'Категория создана');
 

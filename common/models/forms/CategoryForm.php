@@ -18,6 +18,8 @@ use yii\web\UploadedFile;
 /**
  * Class CategoryForm
  * @package common\models\forms
+ *
+ * @property string $previewImage
  */
 class CategoryForm extends Model
 {
@@ -92,7 +94,7 @@ class CategoryForm extends Model
             [['name', 'alias', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
             ['file', 'required', 'when' => function () {
                 return !$this->category->image;
-            }]
+            }],
         ];
     }
 
@@ -168,8 +170,8 @@ class CategoryForm extends Model
             return false;
         }
 
-        $this->setUploadedImage();
         $this->category->setAttributes($this->attributes, false);
+        $this->setUploadedImage();
 
         return $this->setToTree();
     }
@@ -183,8 +185,8 @@ class CategoryForm extends Model
             return false;
         }
 
-        $this->setUploadedImage();
         $this->category->setAttributes($this->attributes, false);
+        $this->setUploadedImage();
 
         return $this->category->save();
     }
@@ -202,7 +204,7 @@ class CategoryForm extends Model
      */
     public function getPreviewImage()
     {
-        return Yii::getAlias('@categoryImagePreviewPath/') . $this->category->image;
+        return Yii::getAlias('@categoryImagePreviewPath/').$this->category->image;
     }
 
     /**
@@ -218,8 +220,8 @@ class CategoryForm extends Model
      */
     private function setUploadedImage()
     {
-        $this->category->file = UploadedFile::getInstance($this, 'file');
-        if ($this->category->file) {
+        if ($this->file) {
+            $this->category->file = $this->file;
             $this->category->image = $this->category->getImageFileUrl('file');
         }
     }
@@ -238,6 +240,7 @@ class CategoryForm extends Model
 
         if (!$this->is_root && $this->root > 0) {
             $parent = Category::find()->roots()->where(['id' => $this->root])->one();
+
             return $this->category->appendTo($parent)->save();
         }
 

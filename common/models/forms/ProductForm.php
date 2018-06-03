@@ -21,6 +21,7 @@ use yii\web\UploadedFile;
  * @property mixed $colors
  * @property array $sortOrder
  * @property array $preview
+ * @property Product $product
  */
 class ProductForm extends Model
 {
@@ -110,15 +111,16 @@ class ProductForm extends Model
     public function rules()
     {
         return [
-            [['name', 'price', 'width', 'height', 'thickness', 'caption', 'description', 'title', 'keywords', 'description_text', 'category_id'], 'required'],
-            [['price', 'old_price', 'width', 'height', 'thickness'], 'number'],
+            [['name', 'price', 'width', 'height', 'thickness', 'caption', 'description', 'title', 'keywords', 'description_text', 'category_id'], 'required', 'message' => 'Поле обязательно к заполнению'],
+            [['price', 'old_price', 'width', 'height', 'thickness'], 'number', 'message' => 'Значение должно быть числовым'],
             [['description_text'], 'string'],
             ['is_shown', 'boolean'],
             ['category_id', 'integer'],
             [['name', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
+            ['title_file', 'file', 'mimeTypes' => 'image/*', 'message' => 'Загружать можно только картинки'],
             ['title_file', 'required', 'when' => function () {
                 return !$this->product->title_image;
-            }]
+            }],
         ];
     }
 
@@ -177,8 +179,8 @@ class ProductForm extends Model
             return false;
         }
 
-        $this->setUploadedImage();
         $this->product->setAttributes($this->getAttributes(), false);
+        $this->setUploadedImage();
 
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -205,8 +207,8 @@ class ProductForm extends Model
             return false;
         }
 
-        $this->setUploadedImage();
         $this->product->setAttributes($this->getAttributes(), false);
+        $this->setUploadedImage();
 
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -245,10 +247,10 @@ class ProductForm extends Model
     {
         $images = [];
 
-        $images['title'] = Yii::getAlias('@productImagePreviewPath/') . $this->product->title_image;
+        $images['title'] = Yii::getAlias('@productImagePreviewPath/').$this->product->title_image;
 
         foreach ($this->product->productsImages as $productImage) {
-            $images['additional'][] = Yii::getAlias('@productImagePreviewPath/') . $productImage->image;
+            $images['additional'][] = Yii::getAlias('@productImagePreviewPath/').$productImage->image;
         }
 
         return $images;
@@ -313,6 +315,11 @@ class ProductForm extends Model
                 ]);
 
                 $image->image = $image->getImageFileUrl('file');
+
+                if (ProductImage::find()->where(['product_id' => $this->product->id])->andWhere(['image' => $image->image])->exists()) {
+                    continue;
+                }
+
                 if (!$image->save()) {
                     return false;
                 }

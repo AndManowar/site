@@ -2,7 +2,9 @@
 
 namespace common\models\products;
 
+use common\components\behaviors\ImageManagerBehavior;
 use common\models\AppActiveRecord;
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\web\UploadedFile;
 use yiidreamteam\upload\ImageUploadBehavior;
@@ -61,6 +63,12 @@ class Color extends AppActiveRecord
                 'attribute' => 'file',
                 'filePath'  => '@colorImagePath/[[filename]].[[extension]]',
                 'fileUrl'   => '[[filename]].[[extension]]',
+            ],
+            [
+                'class'         => ImageManagerBehavior::class,
+                'file'          => 'file',
+                'image'         => 'image',
+                'directoryPath' => Yii::getAlias('@colorImagePath'),
             ],
         ];
     }

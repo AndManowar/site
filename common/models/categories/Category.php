@@ -2,8 +2,10 @@
 
 namespace common\models\categories;
 
+use common\components\behaviors\ImageManagerBehavior;
 use common\models\AppActiveRecord;
 use paulzi\adjacencyList\AdjacencyListBehavior;
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
@@ -60,6 +62,12 @@ class Category extends AppActiveRecord
                 'attribute' => 'file',
                 'filePath'  => '@categoryImagePath/[[filename]].[[extension]]',
                 'fileUrl'   => '[[filename]].[[extension]]',
+            ],
+            [
+                'class'         => ImageManagerBehavior::class,
+                'file'          => 'file',
+                'image'         => 'image',
+                'directoryPath' => Yii::getAlias('@categoryImagePath'),
             ],
         ];
     }
