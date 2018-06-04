@@ -1,40 +1,59 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: manowartop
+ * Date: 04.06.18
+ * Time: 14:21
+ */
 
 namespace common\models\categories;
 
 use common\components\behaviors\ImageManagerBehavior;
-use common\models\AppActiveRecord;
-use paulzi\adjacencyList\AdjacencyListBehavior;
+use common\components\tree\models\Tree;
+use common\components\tree\TreeView;
+use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 use yiidreamteam\upload\ImageUploadBehavior;
 
 /**
- * This is the model class for table "categories".
- *
- * @property int $id
- * @property string $name
- * @property string $alias
- * @property string $caption
- * @property string $image
+ * Class Category
+ * @package common\models\categories
+ * @property int $id [int(11)]
+ * @property string $name [varchar(255)]
+ * @property string $alias [varchar(255)]
+ * @property string $caption [varchar(255)]
+ * @property string $image [varchar(255)]
  * @property string $description_text
- * @property string $title
- * @property string $keywords
- * @property string $description
- * @property int $parent_id
- * @property boolean $sort
- * @property int $created_at
- * @property int $updated_at
+ * @property string $title [varchar(255)]
+ * @property string $keywords [varchar(255)]
+ * @property string $description [varchar(255)]
+ * @property int $root [int(11)]
+ * @property int $lft [int(11)]
+ * @property int $rgt [int(11)]
+ * @property int $lvl [int(11)]
+ * @property bool $active [tinyint(1)]
+ * @property bool $selected [tinyint(1)]
+ * @property bool $disabled [tinyint(1)]
+ * @property bool $readonly [tinyint(1)]
+ * @property bool $visible [tinyint(1)]
+ * @property bool $icon_type [tinyint(1)]
+ * @property string $icon [varchar(255)]
+ * @property bool $collapsed [tinyint(1)]
+ * @property bool $movable_u [tinyint(1)]
+ * @property bool $movable_d [tinyint(1)]
+ * @property bool $movable_l [tinyint(1)]
+ * @property bool $movable_r [tinyint(1)]
+ * @property bool $removable [tinyint(1)]
+ * @property bool $removable_all [tinyint(1)]
+ * @property int $created_at [int(11)]
+ * @property int $updated_at [int(11)]
  *
- *
- * @method Category makeRoot();
- * @method bool deleteWithChildren();
- * @method string getImageFileUrl(string $fileName);
- * @method Category appendTo($model);
+ * @method bool makeRoot();
+ * @method string getImageFileUrl($filename);
  */
-class Category extends AppActiveRecord
+class Category extends Tree
 {
     /**
      * @var UploadedFile
@@ -50,100 +69,42 @@ class Category extends AppActiveRecord
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id'         => 'ID',
+            'name'       => 'Категория',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+
+    /**
      * @return array
      */
     public function behaviors()
     {
-        return [
+        $module = TreeView::module();
+        $settings = ['class' => NestedSetsBehavior::class] + $module->treeStructure;
+
+        $behaviors = [
             TimestampBehavior::class,
-            AdjacencyListBehavior::class,
             [
                 'class'     => ImageUploadBehavior::class,
                 'attribute' => 'file',
-                'filePath'  => '@categoryImagePath/[[filename]].[[extension]]',
+                'filePath'  => '@colorImagePath/[[filename]].[[extension]]',
                 'fileUrl'   => '[[filename]].[[extension]]',
             ],
             [
                 'class'         => ImageManagerBehavior::class,
                 'file'          => 'file',
                 'image'         => 'image',
-                'directoryPath' => Yii::getAlias('@categoryImagePath'),
+                'directoryPath' => Yii::getAlias('@colorImagePath'),
             ],
         ];
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id'               => 'ID',
-            'name'             => 'Название',
-            'alias'            => 'Alias',
-            'caption'          => 'Заголовок h1',
-            'image'            => 'Изображение',
-            'description_text' => 'Описание',
-            'title'            => 'Title',
-            'keywords'         => 'Keywords',
-            'description'      => 'Description',
-            'parent_id'        => 'Parent',
-            'sort'             => 'Sort',
-            'created_at'       => 'Created At',
-            'updated_at'       => 'Updated At',
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function transactions()
-    {
-        return [
-            self::SCENARIO_DEFAULT => self::OP_ALL,
-        ];
-    }
-
-    /**
-     * @return CategoryQuery
-     */
-    public static function find()
-    {
-        return new CategoryQuery(get_called_class());
-    }
-
-    /**
-     * Get roots list
-     *
-     * @param null $id
-     * @return array
-     */
-    public static function getRootList($id = null)
-    {
-        $query = self::find()->roots();
-
-        if ($id != null) {
-            $query->where(['!=', 'id', $id]);
-        }
-
-        return ArrayHelper::map($query->all(), 'id', 'name');
-    }
-
-    /**
-     * Get first available root for dropdown
-     *
-     * @return integer
-     */
-    public static function getDefaultRootValue()
-    {
-        return self::find()->roots()->one()->id;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRoot()
-    {
-        return self::find()->roots()->andWhere(['id' => $this->id])->exists();
+        return array_merge(empty($module->treeBehaviorName) ? [$settings] : [$module->treeBehaviorName => $settings], $behaviors);
     }
 }

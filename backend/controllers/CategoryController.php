@@ -88,7 +88,6 @@ class CategoryController extends baseController
 
         return $this->render('create', [
             'model' => $model,
-            'roots' => Category::getRootList(),
         ]);
     }
 
@@ -118,7 +117,6 @@ class CategoryController extends baseController
 
         return $this->render('update', [
             'model' => $model,
-            'roots' => Category::getRootList($id),
         ]);
     }
 

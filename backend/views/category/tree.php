@@ -6,10 +6,11 @@
  * Time: 15:55
  */
 
+use common\components\tree\TreeView;
+
 $this->title = 'Настройка категорий';
 \backend\assets\MainpageAsset::register($this);
 ?>
-
 
 
 <section id="widget-grid" class="">
@@ -24,9 +25,15 @@ $this->title = 'Настройка категорий';
                     <div class="widget-body no-padding">
                         <h2 class="text-center">Настройка вложенности категорий</h2>
                         <div class="col-md-8 col-md-offset-2">
-                        <?= \common\components\nested\src\widgets\nestable\Nestable::widget([
-                            'modelClass' => \common\models\categories\Category::class,
-                        ]) ?>
+                            <?php echo TreeView::widget(array(
+                                'query'            => \common\models\categories\Category::find()->addOrderBy('root, lft'),
+                                'headingOptions'   => array('label' => 'Categories'),
+                                'topRootAsHeading' => false,
+                                'fontAwesome'      => true,
+                                'isAdmin'          => true,
+                                'softDelete'    => true,
+                                'cacheSettings' => array('enableCache' => true),
+                            )); ?>
                         </div>
                     </div>
                 </div>

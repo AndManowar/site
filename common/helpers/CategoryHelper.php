@@ -20,7 +20,7 @@ class CategoryHelper
     /**
      * @const
      */
-    const CACHE_NAME = 'categoryCache';
+    const CACHE_NAME = 'cate3goriesCache';
 
     /**
      * @const
@@ -51,18 +51,14 @@ class CategoryHelper
      */
     public static function setToCache()
     {
+        /**
+         * @var Category $rootCategory
+         */
         foreach (Category::find()->roots()->all() as $id => $rootCategory) {
             self::$categories[$id] = [
-                'name'  => $rootCategory->name,
-                'alias' => $rootCategory->alias,
+                'category' => $rootCategory,
+                'children' => $rootCategory->children()->all()
             ];
-
-            foreach ($rootCategory->children as $child) {
-                self::$categories[$id]['children'][] = [
-                    'name'  => $child->name,
-                    'alias' => $child->alias
-                ];
-            }
         }
 
         Yii::$app->cache->add(self::CACHE_NAME, self::$categories, self::CACHE_DURATION);

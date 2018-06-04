@@ -8,7 +8,6 @@ $this->title = 'Новая категория';
  */
 echo $this->render('_form', [
     'model'       => $model,
-    'roots'       => $roots,
     'isNewRecord' => true
 ]);
 

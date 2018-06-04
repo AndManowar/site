@@ -65,7 +65,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                             return '<span class="label label-success">Root</span>';
                                         }
 
-                                        return '<span class="label label-danger">Child for "' . Category::find()->roots()->andWhere(['id' => $model->parent_id])->one()->name . '"</span>';
+                                        return '<span class="label label-danger">Child</span>';
+                                    }
+                                ],
+                                [
+                                    'format' => 'html',
+                                    'label'  => 'Активность',
+                                    'value'  => function ($model) {
+                                        /** @var Category $model */
+                                        if ($model->active) {
+                                            return '<span class="label label-success">Active</span>';
+                                        }
+
+                                        return '<span class="label label-danger">Not Active</span>';
                                     }
                                 ],
                                 'created_at:datetime',

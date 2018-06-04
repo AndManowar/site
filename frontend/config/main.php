@@ -9,6 +9,11 @@ return [
     'id'                  => 'app-frontend',
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],
+    'modules'             => [
+        'treemanager' =>  [
+            'class' => '\common\components\tree\Module',
+        ],
+    ],
     'language'            => 'ru-RU',
     'controllerNamespace' => 'frontend\controllers',
     'components'          => [

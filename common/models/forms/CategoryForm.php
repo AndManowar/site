@@ -11,7 +11,6 @@ namespace common\models\forms;
 use common\models\categories\Category;
 use Yii;
 use yii\base\Model;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
@@ -66,12 +65,7 @@ class CategoryForm extends Model
     /**
      * @var boolean
      */
-    public $is_root = true;
-
-    /**
-     * @var int
-     */
-    public $root;
+    public $active;
 
     /**
      * @var Category
@@ -83,19 +77,21 @@ class CategoryForm extends Model
      */
     public function rules()
     {
-        return [
+        $rules = [
             [['name', 'alias', 'description_text', 'caption', 'title', 'keywords', 'description'], 'required', 'message' => 'Поле необходимо к заполнению'],
-            ['is_root', 'boolean'],
-            ['root', 'integer'],
+            ['active', 'boolean'],
             ['alias', 'unique', 'targetClass' => Category::class, 'filter' => !$this->category->isNewRecord ? ['!=', 'id', $this->category->id] : null],
-            ['alias', 'match', 'pattern' => '/[A-Za-z]/i', 'message' => 'Разрешен ввод только латиницей'],
+            ['alias', 'match', 'pattern' => '/^[A-Za-z]*$/u', 'message' => 'Разрешен ввод только латиницей'],
             ['file', 'file', 'maxFiles' => 1, 'mimeTypes' => 'image/*', 'skipOnEmpty' => true],
             [['description_text'], 'string'],
             [['name', 'alias', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
-            ['file', 'required', 'when' => function () {
-                return !$this->category->image;
-            }],
         ];
+
+        if (!$this->category->image) {
+            $rules[] = [['file'], 'required'];
+        }
+
+        return $rules;
     }
 
     /**
@@ -113,12 +109,7 @@ class CategoryForm extends Model
             'title'            => 'Title',
             'keywords'         => 'Keywords',
             'description'      => 'Description',
-            'level'            => 'Level',
-            'lft'              => 'Lft',
-            'rgt'              => 'Rgt',
-            'depth'            => 'Depth',
-            'is_root'          => 'Сделать корневым элементом?',
-            'root'             => 'Родительский элемент',
+            'active'           => 'Активная?',
         ];
     }
 
@@ -131,14 +122,6 @@ class CategoryForm extends Model
     public function __construct($id = null, array $config = [])
     {
         $this->category = $this->getCategory($id);
-
-        if (!$this->category->isNewRecord && !$this->category->isRoot()) {
-            $this->is_root = false;
-        }
-
-        if (!$this->is_root) {
-            $this->root = Category::getDefaultRootValue();
-        }
 
         parent::__construct($config);
     }
@@ -162,7 +145,6 @@ class CategoryForm extends Model
 
     /**
      * @return bool
-     * @throws BadRequestHttpException
      */
     public function create()
     {
@@ -173,7 +155,7 @@ class CategoryForm extends Model
         $this->category->setAttributes($this->attributes, false);
         $this->setUploadedImage();
 
-        return $this->setToTree();
+        return $this->category->makeRoot();
     }
 
     /**
@@ -196,7 +178,7 @@ class CategoryForm extends Model
      */
     public function delete()
     {
-        return $this->category->deleteWithChildren();
+        return $this->category->delete();
     }
 
     /**
@@ -204,7 +186,7 @@ class CategoryForm extends Model
      */
     public function getPreviewImage()
     {
-        return Yii::getAlias('@categoryImagePreviewPath/').$this->category->image;
+        return Yii::getAlias('@categoryImagePreviewPath/') . $this->category->image;
     }
 
     /**
@@ -226,24 +208,4 @@ class CategoryForm extends Model
         }
     }
 
-    /**
-     * Set category to tree on create or update
-     *
-     * @return boolean
-     * @throws BadRequestHttpException
-     */
-    private function setToTree()
-    {
-        if (!$this->is_root && $this->root <= 0) {
-            throw new BadRequestHttpException('Element must be a root or a child of some tree');
-        }
-
-        if (!$this->is_root && $this->root > 0) {
-            $parent = Category::find()->roots()->where(['id' => $this->root])->one();
-
-            return $this->category->appendTo($parent)->save();
-        }
-
-        return $this->category->makeRoot()->save();
-    }
 }

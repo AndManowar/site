@@ -34,10 +34,8 @@ $this->registerJsFile('@web/js/category-js.js');
             <div class="widget-body no-padding">
                 <hr>
                 <?php $form = ActiveForm::begin([
-                    'id'                     => 'category-form',
-                    'enableAjaxValidation'   => $isNewRecord ? false : true,
-                    'enableClientValidation' => $isNewRecord ? true : false,
-                    'options'                => [
+                    'id'      => 'category-form',
+                    'options' => [
                         'enctype' => 'multipart/form-data',
                     ]]) ?>
                 <div class="col-md-12">
@@ -78,51 +76,9 @@ $this->registerJsFile('@web/js/category-js.js');
                 <div class="col-md-12">
                     <?= $form->field($model, 'description', ['options' => ['class' => 'form-group label-floating']])->textInput() ?>
                 </div>
-                <hr>
-
-
-                <h2 class="text-center chechbox">Положение в дереве</h2>
-                <?php if ($isNewRecord) { ?>
-                    <hr>
-
-                    <div class="col-md-12">
-                        <div class="col-md-2 col-md-offset-1">
-                            <?= $form->field($model, 'is_root')->widget(SwitchInput::class, [
-                                'type'         => SwitchInput::CHECKBOX,
-                                'pluginEvents' => [
-                                    "switchChange.bootstrapSwitch" => "function() { 
-                                if($(this).is(':checked')) {
-                                $('.tree_options').addClass('hidden');}
-                            else $('.tree_options').removeClass('hidden'); }",
-                                ],
-                            ]) ?>
-                        </div>
-                        <div class="col-md-6 col-md-offset-1">
-                            <div class="tree_options hidden">
-                                <?php if (!empty($roots)) {
-                                    echo $form->field($model, 'root')->widget(Select2::class, [
-                                        'data'          => $roots,
-                                        'language'      => 'ru',
-                                        'options'       => ['placeholder' => 'Выбрать корневой элемент', 'class' => 'selected_tree'],
-                                        'pluginOptions' => [
-                                            'allowClear' => false,
-                                        ],
-                                    ]);
-                                } else {
-                                    echo '<h1 class="txt-color-red"> Нет ни одного доступного корневого элемента </h1>';
-                                } ?>
-                            </div>
-                        </div>
-                    </div>
-                <?php } else {
-                    echo '<div class="col-md-8 col-md-offset-2">';
-                    if ($model->is_root) {
-                        echo '<h1 class="text-center txt-color-red"> Корневой элемент </h1>';
-                    } else {
-                        echo '<h1 class="text-center txt-color-red"> Дочерний элемент, предок - ' . \common\models\categories\Category::find()->roots()->where(['id' => $model->root])->one()->name . '</h1>';
-                    }
-                }
-                echo '</div>'; ?>
+                <div class="col-md-12">
+                    <?= $form->field($model, 'active', ['options' => ['class' => 'form-group label-floating']])->checkbox() ?>
+                </div>
                 <hr>
                 <div class="col-md-12">
                     <?= Html::submitButton('Сохранить', ['class' => 'btn btn-fill btn-success']) ?>

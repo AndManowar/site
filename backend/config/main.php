@@ -11,6 +11,9 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap'           => ['log'],
     'modules'             => [
+        'treemanager' =>  [
+            'class' => '\common\components\tree\Module',
+        ],
         'gridview' => [
             'class' => '\kartik\grid\Module',
         ],
