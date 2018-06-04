@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models\products;
+namespace common\models\sets;
 
 use common\components\behaviors\ImageManagerBehavior;
 use common\models\AppActiveRecord;
@@ -10,19 +10,26 @@ use yii\web\UploadedFile;
 use yiidreamteam\upload\ImageUploadBehavior;
 
 /**
- * This is the model class for table "colors".
+ * This is the model class for table "sets".
  *
  * @property int $id
  * @property string $name
+ * @property string $alias
  * @property string $image
+ * @property string $description_text
+ * @property string $caption
+ * @property string $title
+ * @property string $keywords
+ * @property string $description
+ * @property int $is_shown
  * @property int $created_at
  * @property int $updated_at
  *
- * @property ProductColor[] $productsColors
+ * @property SetProduct[] $products
  *
  * @method string getImageFileUrl(string $fileName);
  */
-class Color extends AppActiveRecord
+class Set extends AppActiveRecord
 {
     /**
      * @var UploadedFile
@@ -34,7 +41,7 @@ class Color extends AppActiveRecord
      */
     public static function tableName()
     {
-        return '{{%colors}}';
+        return '{{%sets}}';
     }
 
     /**
@@ -43,11 +50,18 @@ class Color extends AppActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'         => 'ID',
-            'name'       => 'Цвет',
-            'image'      => 'Image',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id'               => 'ID',
+            'name'             => 'Name',
+            'alias'            => 'Alias',
+            'image'            => 'Image',
+            'description_text' => 'Description Text',
+            'caption'          => 'Caption',
+            'title'            => 'Title',
+            'keywords'         => 'Keywords',
+            'description'      => 'Description',
+            'is_shown'         => 'Is Shown',
+            'created_at'       => 'Created At',
+            'updated_at'       => 'Updated At',
         ];
     }
 
@@ -61,14 +75,14 @@ class Color extends AppActiveRecord
             [
                 'class'     => ImageUploadBehavior::class,
                 'attribute' => 'file',
-                'filePath'  => '@colorImagePath/[[filename]].[[extension]]',
+                'filePath'  => '@setImagePath/[[filename]].[[extension]]',
                 'fileUrl'   => '[[filename]].[[extension]]',
             ],
             [
                 'class'         => ImageManagerBehavior::class,
                 'file'          => 'file',
                 'image'         => 'image',
-                'directoryPath' => Yii::getAlias('@colorImagePath'),
+                'directoryPath' => Yii::getAlias('@setImagePath'),
             ],
         ];
     }
@@ -76,8 +90,8 @@ class Color extends AppActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProductsColors()
+    public function getProducts()
     {
-        return $this->hasMany(ProductColor::class, ['color_id' => 'id']);
+        return $this->hasMany(SetProduct::class, ['set_id' => 'id']);
     }
 }

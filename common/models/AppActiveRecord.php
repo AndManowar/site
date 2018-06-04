@@ -35,9 +35,9 @@ class AppActiveRecord extends ActiveRecord
      */
     public function formName()
     {
-        if($this->customFormName == null) {
+        if ($this->customFormName == null) {
             return parent::formName();
-        }else{
+        } else {
             return $this->customFormName;
         }
     }
@@ -59,6 +59,21 @@ class AppActiveRecord extends ActiveRecord
         }
     }
 
+    /**
+     * Find model or create new
+     *
+     * @param null|integer $id
+     * @return AppActiveRecord
+     */
+    public static function findOrCreateStrictException($id = null)
+    {
+        if ($id == null) {
+            return new static();
+        }
+
+        return self::findOneStrictException($id);
+    }
+
 
     /**
      * Получение зависимой (реляционой) записи по ID
@@ -72,12 +87,17 @@ class AppActiveRecord extends ActiveRecord
      */
     public function findOneRel($name, $id, $exp404 = false)
     {
-        foreach ( $this->$name as $rel ){
-            if( $rel->id == $id ) return $rel;
+        foreach ($this->$name as $rel) {
+            if ($rel->id == $id) {
+                return $rel;
+            }
         }
 
-        if( $exp404 ) throw new NotFoundHttpException('The requested page does not exist.');
-        else return null;
+        if ($exp404) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        } else {
+            return null;
+        }
     }
 
 }

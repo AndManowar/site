@@ -5,7 +5,6 @@ namespace common\models\products;
 use common\components\behaviors\ImageManagerBehavior;
 use common\models\AppActiveRecord;
 use common\models\categories\Category;
-use common\models\products\ProductImage;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
@@ -63,14 +62,14 @@ class Product extends AppActiveRecord
     {
         return [
             'id'               => 'ID',
-            'name'             => 'Name',
-            'title_image'      => 'Title Image',
-            'price'            => 'Price',
-            'old_price'        => 'Old Price',
-            'width'            => 'Width',
-            'height'           => 'Height',
-            'thickness'        => 'Thickness',
-            'description_text' => 'Description Text',
+            'name'             => 'Наименование',
+            'title_image'      => 'Гланое изображение',
+            'price'            => 'Цена',
+            'old_price'        => 'Старая Цена',
+            'width'            => 'Ширина(мм)',
+            'height'           => 'Высота(мм)',
+            'thickness'        => 'Толщина(мм)',
+            'description_text' => 'Описание',
             'caption'          => 'Caption',
             'title'            => 'Title',
             'keywords'         => 'Keywords',
@@ -100,6 +99,21 @@ class Product extends AppActiveRecord
                 'directoryPath' => Yii::getAlias('@productImagePath'),
             ],
         ];
+    }
+
+    /**
+     * Is product doesn't have colors it cant be shown in the catalog
+     *
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if (!$this->productsColors) {
+            $this->is_shown = false;
+        }
+
+        return parent::beforeSave($insert);
     }
 
     /**

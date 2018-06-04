@@ -21,6 +21,7 @@ class DirectoryController extends Controller
         '@categoryImagePath',
         '@productImagePath',
         '@colorImagePath',
+        '@setImagePath',
     ];
 
     /**

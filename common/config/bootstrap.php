@@ -9,4 +9,6 @@ Yii::setAlias('productImagePath', dirname(dirname(__DIR__)) .'/frontend/web/uplo
 Yii::setAlias('productImagePreviewPath', '/frontend/web/uploads/images/products');
 Yii::setAlias('colorImagePath', dirname(dirname(__DIR__)) .'/frontend/web/uploads/images/colors');
 Yii::setAlias('colorImagePreviewPath', '/frontend/web/uploads/images/colors');
+Yii::setAlias('setImagePath', dirname(dirname(__DIR__)) .'/frontend/web/uploads/images/sets');
+Yii::setAlias('setImagePreviewPath', '/frontend/web/uploads/images/sets');
 

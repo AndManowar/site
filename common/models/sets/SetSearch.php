@@ -2,19 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: manowartop
- * Date: 31.05.18
- * Time: 14:02
+ * Date: 03.06.2018
+ * Time: 17:41
  */
 
-namespace common\models\products;
+namespace common\models\sets;
 
 use yii\data\ActiveDataProvider;
 
 /**
- * Class ColorSearch
- * @package common\models\products
+ * Class SetSearch
+ * @package common\models\sets
  */
-class ColorSearch extends Color
+class SetSearch extends Set
 {
     /**
      * @return array

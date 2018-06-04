@@ -55,12 +55,25 @@ class ProductColor extends AppActiveRecord
     }
 
     /**
+     * If all the colors of product are deleted - setting is_shown to false
+     */
+    public function afterDelete()
+    {
+        if (!$this->product->productsColors) {
+            $this->product->is_shown = false;
+            $this->product->save();
+        }
+
+        parent::afterDelete();
+    }
+
+    /**
      * @return array
      */
     public function behaviors()
     {
         return [
-            TimestampBehavior::class
+            TimestampBehavior::class,
         ];
     }
 

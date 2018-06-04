@@ -17,11 +17,17 @@ use yii\data\ActiveDataProvider;
 class ProductSearch extends Product
 {
     /**
+     * @var integer
+     */
+    public $active_search;
+
+    /**
      * @return array
      */
     public function rules()
     {
         return [
+            [['name', 'width', 'height', 'thickness', 'price', 'active_search'], 'safe'],
         ];
     }
 
@@ -35,13 +41,23 @@ class ProductSearch extends Product
         $query = self::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query'      => $query,
             'pagination' => [
                 'pageSize' => 10,
-            ]
+            ],
         ]);
 
         $this->load($params);
+
+        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['price' => $this->price]);
+        $query->andFilterWhere(['width' => $this->width]);
+        $query->andFilterWhere(['height' => $this->height]);
+        $query->andFilterWhere(['thickness' => $this->thickness]);
+
+        if ($this->active_search) {
+            $query->andFilterWhere(['is_shown' => $this->active_search]);
+        }
 
         if (!$this->validate()) {
 

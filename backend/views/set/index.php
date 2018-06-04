@@ -4,17 +4,16 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-/** @var \common\models\categories\CategorySearch $searchModel */
+/** @var \common\models\sets\SetSearch $searchModel */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
-/* @var $this \yii\web\View */
 
-$this->title = 'Товары';
+$this->title = 'Подборки';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <section id="widget-grid" class="">
     <div class="row">
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="true">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false">
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
                     <h2><?= $this->title ?></h2>
@@ -22,62 +21,37 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div>
                     <div class="jarviswidget-editbox">
                     </div>
-                    <a href="<?= Url::toRoute(['product/create']) ?>" class="btn btn-success"><i
-                                class="fa fa-lg fa-fw fa-plus"></i></a>
-                    <a href="<?= Url::toRoute(['/product']) ?>" class="btn btn-success"><i
-                                class="fa fa-lg fa-fw fa-repeat"></i></a>
+                    <a href="<?= Url::toRoute(['set/create']) ?>" class="btn btn-success"><i
+                            class="fa fa-lg fa-fw fa-plus"></i></a>
                     <br>
                     <br>
                     <div class="widget-body no-padding">
-                        <?php \yii\widgets\Pjax::begin() ?>
                         <?= GridView::widget([
                             'dataProvider' => $dataProvider,
                             'filterModel'  => $searchModel,
                             'tableOptions' => [
-                                'class' => 'table',
+                                'class' => 'table'
                             ],
                             'layout'       => '{items} <div class="box-footer clearfix">{pager}</div>',
                             'pager'        => [
                                 'options' => [
-                                    'class' => 'pagination pagination-sm no-margin pull-right',
+                                    'class' => 'pagination pagination-sm no-margin pull-right'
                                 ],
                             ],
                             'columns'      => [
                                 [
                                     'class'          => 'yii\grid\SerialColumn',
                                     'headerOptions'  => ['class' => 'text-center'],
-                                    'contentOptions' => ['class' => 'text-center'],
+                                    'contentOptions' => ['class' => 'text-center']
                                 ],
                                 [
                                     'label'  => 'Картинка',
                                     'format' => 'html',
                                     'value'  => function ($model) {
-                                        return Html::img('@productImagePreviewPath/'.$model->title_image, ['width' => 100]);
+                                        return Html::img('@setImagePreviewPath/'.$model->image, ['width' => 50]);
                                     },
                                 ],
                                 'name',
-                                'width',
-                                'height',
-                                'thickness',
-                                'price',
-                                'old_price',
-                                [
-                                    'format' => 'html',
-                                    'label'  => 'Активность',
-                                    'attribute' => 'active_search',
-                                    'filter' => [
-                                        0 => 'Not Active',
-                                        1 => 'Active',
-                                    ],
-                                    'value'  => function ($model) {
-                                        /** @var \common\models\products\Product $model */
-                                        if ($model->is_shown) {
-                                            return '<span class="label label-success">Active</span>';
-                                        }
-
-                                        return '<span class="label label-danger">Not Active</span>';
-                                    },
-                                ],
                                 'created_at:datetime',
                                 [
                                     'class'          => 'yii\grid\ActionColumn',
@@ -100,14 +74,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'aria-label'   => 'Удалить',
                                                 'data-pjax'    => '0',
                                                 'data-confirm' => 'Вы уверены, что хотите удалить этот элемент?',
-                                                'data-method'  => 'post',
+                                                'data-method'  => 'post'
                                             ]);
                                         },
                                     ],
                                 ],
                             ],
                         ]); ?>
-                        <?php \yii\widgets\Pjax::end() ?>
                     </div>
                 </div>
             </div>
