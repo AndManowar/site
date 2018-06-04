@@ -26,6 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 class="fa fa-lg fa-fw fa-plus"></i></a>
                     <a href="<?= Url::toRoute(['category/configurate-tree']) ?>" class="btn btn-warning"><i
                                 class="fa fa-lg fa-fw fa-gear"></i></a>
+                    <a href="<?= Url::toRoute(['category/reset-cache']) ?>" class="btn btn-danger">Очистить кэш</a>
                     <br>
                     <br>
                     <div class="widget-body no-padding">

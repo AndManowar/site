@@ -52,7 +52,7 @@ class ImageManagerBehavior extends Behavior
     public function events()
     {
         return [
-            ActiveRecord::EVENT_AFTER_VALIDATE => 'removeChangedImage',
+//            ActiveRecord::EVENT_AFTER_VALIDATE => 'removeChangedImage',
             ActiveRecord::EVENT_BEFORE_DELETE  => 'removeImageAfterDelete',
         ];
     }
@@ -75,7 +75,8 @@ class ImageManagerBehavior extends Behavior
      */
     public function removeChangedImage()
     {
-        if (!$this->owner->isNewRecord && $this->owner->{$this->file}) {
+        if (!$this->owner->isNewRecord && $this->owner->{$this->file} && $this->owner->oldAttributes[$this->image] != $this->owner->{$this->image}) {
+
             $this->removeImage($this->directoryPath.'/'.$this->owner->oldAttributes[$this->image]);
         }
     }

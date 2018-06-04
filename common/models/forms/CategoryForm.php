@@ -81,7 +81,7 @@ class CategoryForm extends Model
             [['name', 'alias', 'description_text', 'caption', 'title', 'keywords', 'description'], 'required', 'message' => 'Поле необходимо к заполнению'],
             ['active', 'boolean'],
             ['alias', 'unique', 'targetClass' => Category::class, 'filter' => !$this->category->isNewRecord ? ['!=', 'id', $this->category->id] : null],
-            ['alias', 'match', 'pattern' => '/^[A-Za-z]*$/u', 'message' => 'Разрешен ввод только латиницей'],
+            ['alias', 'match', 'pattern' => '/^[A-Za-z-]*$/u', 'message' => 'Разрешен ввод только латиницей'],
             ['file', 'file', 'maxFiles' => 1, 'mimeTypes' => 'image/*', 'skipOnEmpty' => true],
             [['description_text'], 'string'],
             [['name', 'alias', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
@@ -178,6 +178,9 @@ class CategoryForm extends Model
      */
     public function delete()
     {
+        if($this->category->isRoot()){
+            return $this->category->deleteWithChildren();
+        }
         return $this->category->delete();
     }
 

@@ -20,7 +20,7 @@ class m180531_101239_products extends Migration
             'name'             => $this->string(255)->notNull(),
             'title_image'      => $this->string(255),
             'price'            => $this->double()->notNull(),
-            'old_price'        => $this->double()->notNull(),
+            'old_price'        => $this->double(),
             'width'            => $this->double(),
             'height'           => $this->double(),
             'thickness'        => $this->double(),

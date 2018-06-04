@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 use common\components\AjaxValidationTrait;
 use common\components\rbac\baseController;
+use common\helpers\CategoryHelper;
 use common\models\categories\Category;
 use common\models\categories\CategorySearch;
 use common\models\forms\CategoryForm;
@@ -46,7 +47,7 @@ class CategoryController extends baseController
             'updateNode' => [
                 'class'      => 'common\components\nested\src\actions\UpdateNodeAction',
                 'modelClass' => $this->modelClass,
-            ]
+            ],
         ];
     }
 
@@ -77,7 +78,7 @@ class CategoryController extends baseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $model->file = UploadedFile::getInstance($model,'file');
+            $model->file = UploadedFile::getInstance($model, 'file');
 
             if ($model->create()) {
                 Yii::$app->session->setFlash('success', 'Категория создана');
@@ -102,7 +103,7 @@ class CategoryController extends baseController
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $model->file = UploadedFile::getInstance($model,'file');
+            $model->file = UploadedFile::getInstance($model, 'file');
 
             if (($errors = $this->modelAjaxValidation($model)) !== null) {
                 return $errors;
@@ -144,5 +145,18 @@ class CategoryController extends baseController
     public function actionConfigurateTree()
     {
         return $this->render('tree');
+    }
+
+    /**
+     * TODO clear cache
+     *
+     * @return \yii\web\Response
+     */
+    public function actionResetCache()
+    {
+        CategoryHelper::setToCache();
+        Yii::$app->session->setFlash('success', 'Кэш очищен');
+
+        return $this->redirect(['index']);
     }
 }

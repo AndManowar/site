@@ -27,6 +27,7 @@ return [
             'rules' => [
                 '' => 'site',
                 '<controller:\w+>/<action:\w+>/<id:\d+>/' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>/<alias:\w+>/' => '<controller>/<action>',
             ],
         ],
         'user' => [

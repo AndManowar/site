@@ -11,6 +11,7 @@ namespace common\models\categories;
 use common\components\behaviors\ImageManagerBehavior;
 use common\components\tree\models\Tree;
 use common\components\tree\TreeView;
+use common\models\products\Product;
 use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -47,10 +48,13 @@ use yiidreamteam\upload\ImageUploadBehavior;
  * @property bool $movable_r [tinyint(1)]
  * @property bool $removable [tinyint(1)]
  * @property bool $removable_all [tinyint(1)]
+ * @property int $parent_id
  * @property int $created_at [int(11)]
+ * @property \yii\db\ActiveQuery $products
  * @property int $updated_at [int(11)]
  *
  * @method bool makeRoot();
+ * @method Category leaves();
  * @method string getImageFileUrl($filename);
  */
 class Category extends Tree
@@ -94,17 +98,57 @@ class Category extends Tree
             [
                 'class'     => ImageUploadBehavior::class,
                 'attribute' => 'file',
-                'filePath'  => '@colorImagePath/[[filename]].[[extension]]',
+                'filePath'  => '@categoryImagePath/[[filename]].[[extension]]',
                 'fileUrl'   => '[[filename]].[[extension]]',
             ],
             [
                 'class'         => ImageManagerBehavior::class,
                 'file'          => 'file',
                 'image'         => 'image',
-                'directoryPath' => Yii::getAlias('@colorImagePath'),
+                'directoryPath' => Yii::getAlias('@categoryImagePath'),
             ],
         ];
 
         return array_merge(empty($module->treeBehaviorName) ? [$settings] : [$module->treeBehaviorName => $settings], $behaviors);
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        $possibleParents = self::find()
+            ->where(['root' => $this->root])
+            ->andWhere(['lvl' => $this->lvl - 1])
+            ->all();
+
+        if ($possibleParents) {
+
+            $lastParent = end($possibleParents);
+            $min = abs($lastParent->rgt - $this->rgt);
+            $id = $lastParent->id;
+
+            foreach ($possibleParents as $parent) {
+
+                if (abs($parent->rgt - $this->rgt) < $min) {
+                    $min = abs($parent->rgt - $this->rgt);
+                    $id = $parent->id;
+                }
+
+            }
+
+            $this->parent_id = $id;
+        }
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProducts()
+    {
+        return $this->hasMany(Product::class, ['category_id' => 'id']);
     }
 }

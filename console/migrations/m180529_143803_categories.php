@@ -45,6 +45,7 @@ class m180529_143803_categories extends Migration
             'movable_r'        => $this->boolean(),
             'removable'        => $this->boolean(),
             'removable_all'    => $this->boolean(),
+            'parent_id'        => $this->integer(),
             'created_at'       => $this->integer(),
             'updated_at'       => $this->integer(),
         ], $tableOptions);

@@ -38,7 +38,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = self::find();
+        $query = self::find()->orderBy(['price' => SORT_ASC]);
 
         $dataProvider = new ActiveDataProvider([
             'query'      => $query,
@@ -54,6 +54,7 @@ class ProductSearch extends Product
         $query->andFilterWhere(['width' => $this->width]);
         $query->andFilterWhere(['height' => $this->height]);
         $query->andFilterWhere(['thickness' => $this->thickness]);
+        $query->andFilterWhere(['category_id' => $this->category_id]);
 
         if ($this->active_search) {
             $query->andFilterWhere(['is_shown' => $this->active_search]);

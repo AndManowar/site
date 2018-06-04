@@ -7,10 +7,13 @@
  */
 
 use common\helpers\CategoryHelper;
+use common\models\categories\Category;
+use yii\helpers\Url;
 
 /**
  * @var string $directoryAsset
  * @var array $categories
+ * @var $this \yii\web\View
  */
 
 $categories = CategoryHelper::getFromCache();
@@ -21,61 +24,49 @@ $categories = CategoryHelper::getFromCache();
         <div class="sidebar__menu">
             <div class="menu js-menu">
                 <ul class="menu__list">
-
                     <?php
-                    /** @var \common\models\categories\Category $category */
-                    foreach ($categories as $category) { ?>
-
-                        <?php if (empty($category['children'])) { ?>
-                            <li class="menu__item"><a class="menu__link js-menu-link" href="category.html"
-                                                      title="<?= $category['category']->name ?>"><?= $category['category']->name ?></a>
-                            </li>
-                        <?php } else { ?>
-                            <li class="menu__item has-child"><a class="menu__link js-menu-link" href=""
-                                                                title="<?= $category['category']->name ?>"><?= $category['category']->name ?></a>
-                                <?php foreach ($category['children'] as $child) { ?>
-
-                                <?php } ?>
-                            </li>
-                        <?php } ?>
-                    <?php } ?>
-
-                </ul>
-                <ul class="menu__list">
-
-                    <?php
-                    /** @var \common\models\categories\Category $category */
-                    foreach ($categories as $category) { ?>
-
-                        <?php if (empty($category['children'])) { ?>
-                            <li class="menu__item"><a class="menu__link js-menu-link" href="category.html"
-                                                      title="<?= $category->name ?>"><?= $category->name ?></a></li>
-                        <?php } else { ?>
-                            <li class="menu__item has-child"><a class="menu__link js-menu-link" href="" title="<?= $category->name ?>"><?= $category->name ?></a>
-                                <ul class="menu__list is-level2 js-menu-list">
-                                    <li class="menu__item is-level2"><a class="menu__link is-level2 js-menu-link"
-                                                                        href="category.html" title="Кухонная мебель">Кухонная
-                                            мебель</a>
-                                    </li>
-                                    <li class="menu__item is-level2 has-child"><a class="menu__link is-level2 js-menu-link"
-                                                                                  href="category.html" title="Стенки">Стенки</a>
-                                        <ul class="menu__list is-level3 js-menu-list">
-                                            <li class="menu__item is-level3"><a class="menu__link is-level3"
-                                                                                href="category.html" title="Стеллажи полки">Стеллажи
-                                                    полки</a></li>
-                                            <li class="menu__item is-level3"><a class="menu__link is-level3"
-                                                                                href="category.html" title="Диваны">Диваны</a>
-                                            </li>
-                                            <li class="menu__item is-level3"><a class="menu__link is-level3"
-                                                                                href="category.html" title="Товары для сна">Товары
-                                                    для сна</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        <?php } ?>
-                    <?php } ?>
-
+                    /** @var Category $category */
+                    if ($categories) {
+                        foreach ($categories as $category) {
+                            if (!isset($category['root']['children'])) {?>
+                                <li class="menu__item"><a class="menu__link js-menu-link" href="<?= Url::toRoute(['catalog/category', 'alias' => $category['root']['alias']]) ?>"
+                                                          title="<?= $category['root']['name'] ?>"><?= $category['root']['name'] ?></a>
+                                </li>
+                            <?php } else { ?>
+                                <li class="menu__item has-child"><a class="menu__link js-menu-link" href="<?= Url::toRoute(['catalog/category', 'alias' => $category['root']['alias']]) ?>"
+                                                                    title="<?= $category['root']['name'] ?>"><?= $category['root']['name'] ?></a>
+                                    <ul class="menu__list is-level2 js-menu-list">
+                                        <?php
+                                        /** @var Category $childCategory */
+                                        foreach ($category['root']['children'] as $childCategory) { ?>
+                                            <?php if (!isset($childCategory['sub'])) { ?>
+                                                <li class="menu__item is-level2"><a
+                                                            class="menu__link is-level2 js-menu-link"
+                                                            href="<?= Url::toRoute(['catalog/category', 'alias' => $childCategory['alias']]) ?>"
+                                                            title="<?= $childCategory['name'] ?>"><?= $childCategory['name'] ?></a>
+                                                </li>
+                                            <?php } else { ?>
+                                                <li class="menu__item is-level2 has-child"><a
+                                                            class="menu__link is-level2 js-menu-link"
+                                                            href="<?= Url::toRoute(['catalog/category', 'alias' => $childCategory['alias']]) ?>"
+                                                            title="<?= $childCategory['name'] ?>"><?= $childCategory['name'] ?></a>
+                                                    <ul class="menu__list is-level3 js-menu-list">
+                                                        <?php foreach ($childCategory['sub'] as $subCategory) { ?>
+                                                            <li class="menu__item is-level3"><a
+                                                                        class="menu__link is-level3"
+                                                                        href="<?= Url::toRoute(['catalog/category', 'alias' => $subCategory['alias']]) ?>"
+                                                                        title="<?= $subCategory['name'] ?>"><?= $subCategory['name'] ?></a>
+                                                            </li>
+                                                        <?php } ?>
+                                                    </ul>
+                                                </li>
+                                            <?php }
+                                        } ?>
+                                    </ul>
+                                </li>
+                            <?php }
+                        }
+                    } ?>
                 </ul>
             </div>
         </div>

@@ -20,7 +20,7 @@ class CategoryHelper
     /**
      * @const
      */
-    const CACHE_NAME = 'cate3goriesCache';
+    const CACHE_NAME = 'c1atsCache';
 
     /**
      * @const
@@ -39,7 +39,7 @@ class CategoryHelper
     {
         self::$categories = Yii::$app->cache->get(self::CACHE_NAME);
 
-        if (empty(self::$categories)) {
+        if (!self::$categories) {
             self::setToCache();
         }
 
@@ -51,14 +51,35 @@ class CategoryHelper
      */
     public static function setToCache()
     {
+        self::$categories = [];
+
         /**
          * @var Category $rootCategory
          */
-        foreach (Category::find()->roots()->all() as $id => $rootCategory) {
-            self::$categories[$id] = [
-                'category' => $rootCategory,
-                'children' => $rootCategory->children()->all()
-            ];
+        foreach (Category::find()->roots()->addOrderBy('root, lft')->all() as $id => $rootCategory) {
+            if ($rootCategory->alias) {
+                self::$categories[$rootCategory->id]['root'] = [
+                    'name'  => $rootCategory->name,
+                    'alias' => $rootCategory->alias,
+                ];
+            }
+            foreach (Category::find()->where(['parent_id' => $rootCategory->id])->addOrderBy('root, lft')->all() as $child) {
+                if ($child->alias) {
+                    self::$categories[$rootCategory->id]['root']['children'][$child->id] = [
+                        'name'  => $child->name,
+                        'alias' => $child->alias,
+                    ];
+                }
+                foreach (Category::find()->where(['parent_id' => $child->id])->addOrderBy('root, lft')->all() as $sub) {
+                    if ($sub->alias) {
+                        self::$categories[$rootCategory->id]['root']['children'][$child->id]['sub'][] = [
+                            'name'  => $sub->name,
+                            'alias' => $sub->alias,
+                        ];
+                    }
+                }
+            }
+
         }
 
         Yii::$app->cache->add(self::CACHE_NAME, self::$categories, self::CACHE_DURATION);
