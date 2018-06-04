@@ -33,7 +33,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@webroot/style');
 <body class=" desktop-detected menu-on-top pace-done">
 <?php $this->beginBody() ?>
 <?= $this->render('header.php', ['directoryAsset' => $directoryAsset]) ?>
-<?= $this->render('left.php', ['directoryAsset' => $directoryAsset]) ?>
+<?= $this->render('left.php') ?>
 <?= $this->render('content.php', ['content' => $content]) ?>
 <?php $this->endBody() ?>
 </body>

@@ -75,7 +75,7 @@ class ImageManagerBehavior extends Behavior
      */
     public function removeChangedImage()
     {
-        if ($this->owner->{$this->file}) {
+        if (!$this->owner->isNewRecord && $this->owner->{$this->file}) {
             $this->removeImage($this->directoryPath.'/'.$this->owner->oldAttributes[$this->image]);
         }
     }

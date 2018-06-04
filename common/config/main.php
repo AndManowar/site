@@ -28,6 +28,11 @@ return [
                 ['f', '@frontend/controllers', 'Публичная часть', '\frontend\controllers'],
             ],
         ],
+        'view'          => [
+            'renderers' => [
+                'pug' => 'rmrevin\\yii\\pug\\ViewRenderer',
+            ],
+        ],
         'i18n'          => [
             'translations' => [
                 'vendor/voskobovich/yii2-tree-manager/widgets/nestable' => [

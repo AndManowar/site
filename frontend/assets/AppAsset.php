@@ -18,24 +18,17 @@ class AppAsset extends AssetBundle
 {
     public $baseUrl = '@web/style';
     public $sourcePath = '@webroot/style';
-    public $jsOptions = ['position' => View::POS_HEAD];
+    public $jsOptions = ['position' => View::POS_END];
     public $css = [
-        'css/style.css',
-        'css/animate.min.css',
+        'css/style.min.css'
     ];
     public $js = [
-        'js/bootstrap.js',
-        'js/modernizr.custom.js',
-//        'js/simpleCart.min.js',
-        'js/wow.min.js',
-        'js/move-top.js',
-        'js/easing.js',
-        'js/jquery.countdown.min.js',
-        'js/jquery.flexslider.js',
-        'js/mainpage.js',
+        'js/commons.js',
+        'js/app.js',
+        'js/gallery.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
     ];
 }
