@@ -69,7 +69,6 @@ class CategoryController extends baseController
 
     /**
      * @return array|null|string|\yii\web\Response
-     * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\NotFoundHttpException
      */
     public function actionCreate()
@@ -148,13 +147,11 @@ class CategoryController extends baseController
     }
 
     /**
-     * TODO clear cache
-     *
      * @return \yii\web\Response
      */
     public function actionResetCache()
     {
-        CategoryHelper::setToCache();
+        CategoryHelper::clearCache();
         Yii::$app->session->setFlash('success', 'Кэш очищен');
 
         return $this->redirect(['index']);

@@ -65,7 +65,7 @@ class ProductController extends baseController
 
         return $this->render('create', [
             'model'      => $model,
-            'categories' => ArrayHelper::map(Category::find()->all(), 'id', 'name'),
+            'categories' => ArrayHelper::map(Category::find()->where(['is not','parent_id', null])->all(), 'id', 'name'),
         ]);
     }
 
@@ -126,6 +126,7 @@ class ProductController extends baseController
      * @param integer $id
      * @return \yii\web\Response
      * @throws \Exception
+     * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      * @throws \yii\web\NotFoundHttpException
      */
@@ -209,6 +210,7 @@ class ProductController extends baseController
      * @throws \Exception
      * @throws \yii\db\StaleObjectException
      * @throws \yii\web\NotFoundHttpException
+     * @throws \Throwable
      */
     public function actionDeleteColor($id)
     {

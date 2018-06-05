@@ -8,7 +8,8 @@ return [
     'components' => [
         'language' => 'ru-RU', //
         'cache'    => [
-            'class' => 'yii\caching\FileCache',
+            'class'     => 'yii\caching\FileCache',
+            'cachePath' => '@backend/runtime/cache',
         ],
         'handbook' => [
             'class' => 'common\components\handbook\Main',
@@ -26,11 +27,6 @@ return [
             'branches' => [
                 ['b', '@backend/controllers', 'Админ панель', '\backend\controllers'],
                 ['f', '@frontend/controllers', 'Публичная часть', '\frontend\controllers'],
-            ],
-        ],
-        'view'          => [
-            'renderers' => [
-                'pug' => 'rmrevin\\yii\\pug\\ViewRenderer',
             ],
         ],
         'i18n'          => [

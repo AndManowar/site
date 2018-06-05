@@ -114,6 +114,7 @@ class ColorForm extends Model
      * @return bool
      * @throws \Exception
      * @throws \yii\db\StaleObjectException
+     * @throws \Throwable
      */
     public function delete()
     {

@@ -10,40 +10,42 @@ return [
     'basePath'            => dirname(__DIR__),
     'bootstrap'           => ['log'],
     'modules'             => [
-        'treemanager' =>  [
+        'treemanager' => [
             'class' => '\common\components\tree\Module',
         ],
     ],
     'language'            => 'ru-RU',
     'controllerNamespace' => 'frontend\controllers',
     'components'          => [
-        'request' => [
+        'request'      => [
             'csrfParam' => '_csrf-frontend',
-            'baseUrl' => '',
+            'baseUrl'   => '',
         ],
-        'urlManager' => [
+        'urlManager'   => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-                '' => 'site',
-                '<controller:\w+>/<action:\w+>/<id:\d+>/' => '<controller>/<action>',
+            'showScriptName'  => false,
+            'rules'           => [
+                ''                                           => 'site',
+                '<controller:\w+>/<action:\w+>/<id:\d+>/'    => '<controller>/<action>',
                 '<controller:\w+>/<action:\w+>/<alias:\w+>/' => '<controller>/<action>',
+                'product/<id:\d+>'                           => 'product/detail',
+                'catalog>'                                   => 'catalog/index',
             ],
         ],
-        'user' => [
-            'identityClass' => 'common\models\users\User',
+        'user'         => [
+            'identityClass'   => 'common\models\users\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityCookie'  => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
-        'session' => [
+        'session'      => [
             // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
         ],
-        'log' => [
+        'log'          => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
+            'targets'    => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class'  => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -52,9 +54,9 @@ return [
             'errorAction' => 'site/error',
         ],
         'assetManager' => [
-            'class' => 'yii\web\AssetManager',
+            'class'     => 'yii\web\AssetManager',
             'forceCopy' => true,
         ],
     ],
-    'params' => $params,
+    'params'              => $params,
 ];

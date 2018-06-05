@@ -145,6 +145,15 @@ class Category extends Tree
     }
 
     /**
+     * @param $id
+     * @return mixed
+     */
+    public static function getChildren($id)
+    {
+        return self::find()->where(['parent_id' => $id])->all();
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getProducts()

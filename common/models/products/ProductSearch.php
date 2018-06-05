@@ -22,6 +22,11 @@ class ProductSearch extends Product
     public $active_search;
 
     /**
+     * @var bool
+     */
+    public $is_admin = true;
+
+    /**
      * @return array
      */
     public function rules()
@@ -38,12 +43,16 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = self::find()->orderBy(['price' => SORT_ASC]);
+        if (!$this->is_admin) {
+            $query = self::find()->where(['is_shown' => true])->orderBy(['price' => SORT_ASC]);
+        } else {
+            $query = self::find();
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query'      => $query,
             'pagination' => [
-                'pageSize' => 10,
+                'pageSize' => 12,
             ],
         ]);
 

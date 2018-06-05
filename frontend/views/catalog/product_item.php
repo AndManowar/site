@@ -13,9 +13,10 @@
 ?>
 
 <div class="products__item col-3 col-xl-4 col-l-6 col-md-4 col-m-6 col-s-12 is-collapse"><a
-            class="product is-fold" href="product.html" title="Шкаф-купе «Версаль» фасад-комби">
-        <div class="product__cover"><img class="product__image" alt="Шкаф-купе «Версаль» фасад-комби"
-                                         src="<?= Yii::getAlias('@productImagePreviewPath/').$model->title_image ?>">
+            class="product is-fold" href="<?= \yii\helpers\Url::toRoute('/product/'.$model->id) ?>"
+            title="<?= $model->name ?>">
+        <div class="product__cover"><img class="product__image" alt="<?= $model->name ?>"
+                                         src="<?= Yii::getAlias('@productImagePreviewPath/') . $model->title_image ?>">
             <div class="product__overlay"></div>
         </div>
         <div class="product__body">

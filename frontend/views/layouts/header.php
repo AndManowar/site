@@ -26,7 +26,7 @@
                     </svg><span>меню</span>
                 </button>
                 <ul class="nav__list js-nav-list">
-                    <li class="nav__item"><a class="nav__link" href="catalog.html" title="Каталог">Каталог</a></li>
+                    <li class="nav__item"><a class="nav__link" href="<?= \yii\helpers\Url::toRoute(['/catalog']) ?>" title="Каталог">Каталог</a></li>
                     <li class="nav__item"><a class="nav__link" href="sale.html" title="Распродажа">Распродажа</a></li>
                     <li class="nav__item"><a class="nav__link" href="single.html" title="Акции">Акции</a></li>
                     <li class="nav__item"><a class="nav__link" href="single.html" title="О компании">О компании</a></li>

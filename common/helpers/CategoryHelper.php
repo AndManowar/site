@@ -51,8 +51,6 @@ class CategoryHelper
      */
     public static function setToCache()
     {
-        self::$categories = [];
-
         /**
          * @var Category $rootCategory
          */
@@ -79,9 +77,16 @@ class CategoryHelper
                     }
                 }
             }
-
         }
 
-        Yii::$app->cache->add(self::CACHE_NAME, self::$categories, self::CACHE_DURATION);
+       Yii::$app->cache->set(self::CACHE_NAME, self::$categories, self::CACHE_DURATION);
+    }
+
+    /**
+     * Reset cache
+     */
+    public static function clearCache()
+    {
+        self::setToCache();
     }
 }

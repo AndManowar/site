@@ -66,10 +66,6 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        //        'assetManager' => [
-        //            'class'     => 'yii\web\AssetManager',
-        //            'forceCopy' => true,
-        //        ],
         'view'         => [
             'theme' => [
                 'pathMap' => [
