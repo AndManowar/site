@@ -8,15 +8,15 @@
 
 namespace frontend\controllers;
 
+use common\components\rbac\baseController;
 use common\models\products\Product;
 use Yii;
-use yii\web\Controller;
 
 /**
  * Class ProductController
  * @package frontend\controllers
  */
-class ProductController extends Controller
+class ProductController extends baseController
 {
 
     /**

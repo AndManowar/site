@@ -16,6 +16,7 @@ use common\helpers\CirilicTranslit;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use yii\rbac\Role;
+use yii\web\BadRequestHttpException;
 
 /**
  * Class Main
@@ -61,9 +62,14 @@ class Main extends Component
      * @return bool
      *
      * Проверка доступа к текущему роуту
+     * @throws BadRequestHttpException
      */
     public function control($branchId)
     {
+        if(!array_key_exists(self::ROLE_GUEST, Yii::$app->authManager->getRoles())){
+            throw new BadRequestHttpException('Guest role must be specified');
+        }
+
         $role = self::ROLE_GUEST;
 
         if (Yii::$app->user->id == 1) {
@@ -73,6 +79,7 @@ class Main extends Component
         if (!Yii::$app->user->isGuest) {
             $role = key(Yii::$app->authManager->getRolesByUser(Yii::$app->user->id));
         }
+
 
         return ArrayHelper::keyExists($this->parseRoute(Yii::$app->controller->id . '/' . Yii::$app->requestedAction->id, $branchId), Yii::$app->authManager->getPermissionsByRole($role));
     }
@@ -294,6 +301,7 @@ class Main extends Component
      */
     public function addRoutePermission($route, $branchId)
     {
+
         if (isset($this->branches[$branchId])) {
             $permission = Yii::$app->authManager->createPermission($this->parseRoute($route, $branchId));
             Yii::$app->authManager->add($permission);

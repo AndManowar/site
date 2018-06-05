@@ -108,6 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ]); ?>
                         <?php \yii\widgets\Pjax::end() ?>
+                        <br>
                     </div>
                 </div>
             </div>

@@ -37,7 +37,6 @@ class baseController extends Controller
      */
     public function beforeAction($action)
     {
-
         if (!Yii::$app->accessControl->control(Yii::$app->params['accessControl']['controlBranchId'])) {
 
             if (Yii::$app->params['accessControl']['controlBranchId'] == self::BACKEND_BRANCH && Yii::$app->user->isGuest) {

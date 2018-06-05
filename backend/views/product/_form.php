@@ -93,7 +93,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                         'editorOptions' => ElFinder::ckeditorOptions('elfinder', []),
                     ]) ?>
                 </div>
-
                 <hr>
                 <h3 class="text-center">Meta</h3>
                 <hr>

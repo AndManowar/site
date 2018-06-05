@@ -24,7 +24,7 @@ $this->title = 'Настройка категорий';
                 <div>
                     <div class="widget-body no-padding">
                         <h2 class="text-center">Настройка вложенности категорий</h2>
-                        <div class="col-md-8 col-md-offset-2">
+                        <div class="col-md-12">
                             <?php echo TreeView::widget(array(
                                 'query'            => \common\models\categories\Category::find()->addOrderBy('root, lft'),
                                 'headingOptions'   => array('label' => 'Categories'),
@@ -34,6 +34,7 @@ $this->title = 'Настройка категорий';
                                 'softDelete'    => true,
                                 'cacheSettings' => array('enableCache' => true),
                             )); ?>
+                            <hr>
                         </div>
                     </div>
                 </div>

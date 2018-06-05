@@ -8,18 +8,18 @@
 
 namespace frontend\controllers;
 
+use common\components\rbac\baseController;
 use common\models\categories\Category;
 use common\models\products\ProductSearch;
 use Yii;
 use yii\data\Sort;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
  * Class CatalogController
  * @package frontend\controllers
  */
-class CatalogController extends Controller
+class CatalogController extends baseController
 {
     /**
      * @return string

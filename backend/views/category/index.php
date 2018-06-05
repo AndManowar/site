@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <br>
                     <br>
                     <div class="widget-body no-padding">
+                        <?php \yii\widgets\Pjax::begin() ?>
                         <?= GridView::widget([
                             'dataProvider' => $dataProvider,
                             'filterModel'  => $searchModel,
@@ -110,6 +111,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                             ],
                         ]); ?>
+                        <?php \yii\widgets\Pjax::end() ?>
+                        <br>
                     </div>
                 </div>
             </div>
