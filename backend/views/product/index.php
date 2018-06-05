@@ -84,12 +84,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'header'         => 'Действия',
                                     'headerOptions'  => ['class' => 'text-right'],
                                     'contentOptions' => ['class' => 'td-actions text-right'],
-                                    'template'       => '{update} {delete}',
+                                    'template'       => '{step-two} {update} {delete}',
                                     'buttons'        => [
                                         'update' => function ($url) {
                                             return Html::a(
                                                 '<i class="material-icons">edit</i>',
                                                 $url, ['class' => 'btn btn-success']);
+                                        },
+                                        'step-two' => function ($url) {
+                                            return Html::a(
+                                                '<i class="material-icons">settings</i>',
+                                                $url, ['class' => 'btn btn-warning']);
                                         },
                                         'delete' => function ($url) {
                                             return Html::a(
