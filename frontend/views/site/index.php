@@ -6,6 +6,8 @@
  * Time: 12:16
  */
 
+use yii\helpers\Url;
+
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@webroot/style');
 ?>
 <div class="section is-collapse is-clear">
@@ -64,114 +66,19 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@webroot/style');
     <div class="section__body">
         <div class="cats">
             <div class="cats__list">
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="1">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-1"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Кухни</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="2">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-2"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Шкафы</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="3">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-3"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Стенки</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="4">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-4"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Прихожие</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="5">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-5"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Кровати</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="6">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-6"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Столы и стулья</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="7">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-7"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Комоды и трюмо</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="8">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-8"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Стеллажи и полки</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="9">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-9"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Диваны</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="10">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-10"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Товары для сна</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="11">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-11"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Детская мебель</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
-                <div class="cats__item"><a class="cat" href="category.html">
-                        <div class="cat__cover">
-                            <svg class="cat__image" data-id="12">
-                                <use xlink:href="<?= $directoryAsset ?>/img/sprite.svg#cat-12"></use>
-                            </svg>
-                        </div>
-                        <h3 class="cat__title">Готовые спальни</h3>
-                        <div class="cat__price">от 12 500 ₽</div></a>
-                </div>
+                <?php foreach ($categories as $id => $category) { ?>
+                    <div class="cats__item"><a class="cat"
+                                               href="<?= Url::toRoute(['catalog/category', 'alias' => $category->alias]) ?>">
+                            <div class="cat__cover">
+                                <svg class="cat__image" data-id="1">
+                                    <use xlink:href="<?= Yii::getAlias('@assetsImages/') ?>img/sprite.svg#cat-<?= $id + 1 ?>"></use>
+                                </svg>
+                            </div>
+                            <h3 class="cat__title"><?= $category->name ?></h3>
+                            <div class="cat__price">от 12 500 ₽</div>
+                        </a>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </div>

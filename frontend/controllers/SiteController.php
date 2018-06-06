@@ -11,6 +11,7 @@ namespace frontend\controllers;
 use common\components\AjaxValidationTrait;
 use common\helpers\CategoryHelper;
 use common\models\Banners;
+use common\models\categories\Category;
 use common\models\Contacts;
 use common\models\LoginForm;
 use common\models\Subscriptions;
@@ -33,7 +34,7 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
-            ]
+            ],
         ];
     }
 
@@ -43,7 +44,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('index', ['categories' => Category::getChildren(1)]);
     }
 
 //    /**

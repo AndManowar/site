@@ -29,7 +29,7 @@ return [
                 '<controller:\w+>/<action:\w+>/<id:\d+>/'    => '<controller>/<action>',
                 '<controller:\w+>/<action:\w+>/<alias:\w+>/' => '<controller>/<action>',
                 'product/<id:\d+>'                           => 'product/detail',
-                'catalog>'                                   => 'catalog/index',
+                'catalog'                                   => 'catalog/index',
             ],
         ],
         'user'         => [

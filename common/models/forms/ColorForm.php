@@ -44,7 +44,7 @@ class ColorForm extends Model
     {
         return [
             [['name'], 'required', 'message' => 'Поле обязательно к заполнению'],
-            ['file', 'file', 'mimeTypes' => 'image/*'],
+            ['file', 'file', 'extensions' => 'jpeg, png, jpg'],
             ['file', 'required', 'when' => function () {
                 return !$this->color->image;
             }],

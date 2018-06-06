@@ -82,7 +82,7 @@ class CategoryForm extends Model
             ['active', 'boolean'],
             ['alias', 'unique', 'targetClass' => Category::class, 'filter' => !$this->category->isNewRecord ? ['!=', 'id', $this->category->id] : null],
             ['alias', 'match', 'pattern' => '/^[A-Za-z-]*$/u', 'message' => 'Разрешен ввод только латиницей'],
-            ['file', 'file', 'maxFiles' => 1, 'mimeTypes' => 'image/*', 'skipOnEmpty' => true],
+            ['file', 'file', 'maxFiles' => 1, 'extensions' => 'jpeg, png, jpg', 'skipOnEmpty' => true],
             [['description_text'], 'string'],
             [['name', 'alias', 'caption', 'title', 'keywords', 'description'], 'string', 'max' => 255],
         ];
@@ -178,9 +178,10 @@ class CategoryForm extends Model
      */
     public function delete()
     {
-        if($this->category->isRoot()){
+        if ($this->category->isRoot()) {
             return $this->category->deleteWithChildren();
         }
+
         return $this->category->delete();
     }
 
@@ -189,7 +190,7 @@ class CategoryForm extends Model
      */
     public function getPreviewImage()
     {
-        return Yii::getAlias('@categoryImagePreviewPath/') . $this->category->image;
+        return Yii::getAlias('@categoryImagePreviewPath/').$this->category->image;
     }
 
     /**
