@@ -5,6 +5,7 @@
  * Date: 04.06.18
  * Time: 12:17
  */
+use yii\helpers\Url;
 
 /**
  * @var string $directoryAsset
@@ -12,11 +13,13 @@
 ?>
 <header class="page__header">
     <div class="header">
+        <a href="<?= Url::toRoute(['site/index']) ?>">
         <div class="header__logo">
             <div class="logo">
                 <div class="logo__label">Тея <i>Мебель</i></div>
             </div>
         </div>
+        </a>
         <div class="header__nav">
             <nav class="nav js-nav">
                 <div class="nav__overlay js-nav-overlay"></div>
@@ -26,7 +29,7 @@
                     </svg><span>меню</span>
                 </button>
                 <ul class="nav__list js-nav-list">
-                    <li class="nav__item"><a class="nav__link" href="<?= \yii\helpers\Url::toRoute(['/catalog']) ?>" title="Каталог">Каталог</a></li>
+                    <li class="nav__item"><a class="nav__link" href="<?= Url::toRoute(['/catalog']) ?>" title="Каталог">Каталог</a></li>
                     <li class="nav__item"><a class="nav__link" href="sale.html" title="Распродажа">Распродажа</a></li>
                     <li class="nav__item"><a class="nav__link" href="single.html" title="Акции">Акции</a></li>
                     <li class="nav__item"><a class="nav__link" href="single.html" title="О компании">О компании</a></li>
